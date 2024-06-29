@@ -10,7 +10,7 @@ import {
 import { useTheme } from "@/components/theme-provider"
 
 interface SwitchThemeProps {
-    isCollapsed: boolean
+    isCollapsed?: boolean
 }
 
 export function SwitchTheme({ isCollapsed }: SwitchThemeProps) {

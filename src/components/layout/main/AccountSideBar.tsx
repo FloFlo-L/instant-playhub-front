@@ -10,7 +10,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { MdLogin, MdLogout } from "react-icons/md";
 import {
@@ -66,30 +66,30 @@ const AvatarSideBar = ({ isCollapsed }: AvatarSidebarProps) => {
                 <div className="w-full">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <div className="flex p-2 gap-4 items-center hover:cursor-pointer hover:bg-muted rounded-sm">
+                            <div className={`flex gap-4 items-center hover:cursor-pointer hover:bg-muted rounded-sm ${isCollapsed ? '' : 'p-2'}`}>
                                 {renderAvatar()}
                                 {!isCollapsed && (
                                     <p className="font-bold">Username</p>
                                 )}
                             </div>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align={`${isCollapsed ? "start" : "center"}`}>
-                            <DropdownMenuItem>
-                                <Link to="/" className="flex w-full">
-                                    <FaUser size={18} className="mr-2" /> My Account
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Link to="/logout" className="flex w-full">
-                                    <MdLogout size={18} className="mr-2" /> Logout
-                                </Link>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align={`${isCollapsed ? "start" : "center"}`}>
+                        <DropdownMenuItem>
+                            <Link to="/" className="flex w-full">
+                                <FaUser size={18} className="mr-2" /> My Account
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link to="/logout" className="flex w-full">
+                                <MdLogout size={18} className="mr-2" /> Logout
+                            </Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                </div >
             ) : (
-                !isCollapsed ? renderLoginButton() : renderLoginTooltip()
-            )}
+    !isCollapsed ? renderLoginButton() : renderLoginTooltip()
+)}
         </>
     );
 };

@@ -1,16 +1,16 @@
 import React, { ReactNode, useState, useEffect, useRef } from 'react';
 import Sidebar from './Sidebar';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../ui/resizable';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { cn } from '@/lib/utils';
 import Footer from './Footer';
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { SwitchTheme } from '../switch-theme';
+import { SwitchTheme } from '@/components/switch-theme';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-const Layout = ({ children }: LayoutProps) => {
+const LayoutMain = ({ children }: LayoutProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const sidebarRef = useRef<any>(null);
 
@@ -29,8 +29,8 @@ const Layout = ({ children }: LayoutProps) => {
         <ResizablePanel
           ref={sidebarRef}
           defaultSize={20}
-          minSize={15}
-          maxSize={25}
+          minSize={13}
+          maxSize={20}
           collapsible={true}
           collapsedSize={4}
           onCollapse={() => setIsCollapsed(true)}
@@ -47,7 +47,7 @@ const Layout = ({ children }: LayoutProps) => {
         <ResizableHandle withHandle isCollapsed={isCollapsed} onToggle={toggleCollapse} />
         <ResizablePanel defaultSize={80}>
           <ScrollArea className='h-full'>
-            <div className="pr-1">
+            <div className="">
               {children}
               <Footer />
             </div>
@@ -58,4 +58,4 @@ const Layout = ({ children }: LayoutProps) => {
   );
 }
 
-export default Layout;
+export default LayoutMain;

@@ -1,8 +1,8 @@
 import { Separator } from "@/components/ui/separator";
-import MenuLink from "../menuLink";
-import { FaCog, FaComments, FaHashtag, FaHome, FaUsers } from "react-icons/fa";
+import MenuLink from "@/components/menuLink";
+import { FaCog, FaComments, FaHashtag, FaHome, FaTrophy, FaUsers } from "react-icons/fa";
 import { useAuth } from '@/provider/authProvider';
-import AvatarSideBar from "./AccountSideBar";
+import AvatarSideBar from "@/components/layout/main/AccountSideBar";
 
 interface SidebarProps {
     isCollapsed: boolean
@@ -25,11 +25,21 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
                 ],
             },
             {
+                title: "Score",
+                items: [
+                    {
+                        title: "Scores",
+                        path: "/scores",
+                        icon: <FaTrophy size={20} />
+                    },
+                ],
+            },
+            {
                 title: "Games",
                 items: [
                     {
-                        title: "Morpion",
-                        path: "/morpion",
+                        title: "Tic Tac Toe",
+                        path: "/tic-tac-toe",
                         icon: <FaHashtag size={20} />
                     },
                     {
