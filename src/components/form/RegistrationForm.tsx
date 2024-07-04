@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -15,6 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
     username: z.string().min(1, {
@@ -30,7 +31,7 @@ const formSchema = z.object({
     password: z.string().min(1, {
         message: "Password is required",
     }).refine(value => {
-        // Règles du mot de passe : au moins 8 caractères, une majuscule, un chiffre et un caractère spécial
+        // Password rules: at least 8 characters, an uppercase letter, a number, and a special character
         const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).{8,}$/;
         return passwordRegex.test(value);
     }, {
@@ -39,12 +40,11 @@ const formSchema = z.object({
 })
 
 export const RegistrationForm = () => {
-    const {
-        setError
-    } = useForm();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    // 1. Define your form.
+    // Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -54,29 +54,30 @@ export const RegistrationForm = () => {
         },
     })
 
-    // 2. Define a submit handler.
+    // Define a submit handler.
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        setLoading(true);
+        setErrorMessage(null);
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/register`, values);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, values);
 
             if (response.status === 200) {
                 navigate("/login");
             } else {
-                console.error("Erreur lors de l'inscription :", response.data);
+                setErrorMessage("Error during registration: " + response.data.message);
             }
         } catch (err) {
-            console.log("oci")
+            console.error("Request error:", err);
             if (err instanceof AxiosError) {
-                console.error("Erreur lors de la requête d'inscription :", err);
-                console.log("ici    ")
                 if (err.response?.data?.error_email) {
-                    console.log('icic');
-                    const errorMessage = err.response.data.error_email as string;
-                    console.log(errorMessage)
-                    form.setError('email', { type: 'server', message: errorMessage });
+                    form.setError('email', { type: 'server', message: err.response.data.error_email });
                 }
+                setErrorMessage(err.response?.data?.error || err.message);
+            } else {
+                setErrorMessage(err.message);
             }
-
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -88,9 +89,9 @@ export const RegistrationForm = () => {
                     name="username"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Pseudo *</FormLabel>
+                            <FormLabel>Username *</FormLabel>
                             <FormControl>
-                                <Input placeholder="MonSuperbePseudo" type="text" {...field} />
+                                <Input placeholder="MyAwesomeUsername" type="text" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -103,7 +104,7 @@ export const RegistrationForm = () => {
                         <FormItem>
                             <FormLabel>Email *</FormLabel>
                             <FormControl>
-                                <Input placeholder="examle@gmail.com" type="email" {...field} />
+                                <Input placeholder="example@gmail.com" type="email" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -122,7 +123,19 @@ export const RegistrationForm = () => {
                         </FormItem>
                     )}
                 />
-                <Button className="w-full" type="submit">Create an account</Button>
+                {errorMessage && (
+                    <div className="text-sm font-medium text-destructive">{errorMessage}</div>
+                )}
+                <Button className="w-full" type="submit" disabled={!form.formState.isValid || loading}>
+                    {loading ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Please wait
+                        </>
+                    ) : (
+                        "Create an account"
+                    )}
+                </Button>
                 <div className="mt-6 text-center text-sm">
                     Already have an account?{" "}
                     <Link to="/login" className="underline">

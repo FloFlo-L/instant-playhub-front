@@ -1,21 +1,21 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-import { Button } from "@/components/ui/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "@/provider/authProvider"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/provider/authProvider";
 import axios from 'axios';
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
     email: z.string().min(1, {
@@ -26,35 +26,41 @@ const formSchema = z.object({
     password: z.string().min(1, {
         message: "Password is required",
     })
-})
+});
 
 export default function LoginForm() {
     const navigate = useNavigate();
     const { setToken } = useAuth();
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    // 1. Define your form.
+    // Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: "",
             password: "",
         },
-    })
+    });
 
-    // 2. Define a submit handler.
+    // Define a submit handler.
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(import.meta.env)
+        setLoading(true);
+        setErrorMessage(null);
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/login`, values);
 
             if (response.status === 200) {
                 setToken(response.data.access_token);
-                navigate("/")
+                navigate("/");
             } else {
-                console.error("Erreur lors de la connexion :", response.data);
+                setErrorMessage("Error during login: " + response.data.message);
             }
         } catch (error) {
-            console.error("Erreur lors de la requête de connexion :", error);
+            console.error("Request error:", );
+            setErrorMessage(error.response?.data?.error || error.message);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -95,7 +101,19 @@ export default function LoginForm() {
                         </FormItem>
                     )}
                 />
-                <Button className="w-full" type="submit">Se connecter</Button>
+                {errorMessage && (
+                    <div className="text-sm font-medium text-destructive">{errorMessage}</div>
+                )}
+                <Button className="w-full" type="submit" disabled={!form.formState.isValid || loading}>
+                    {loading ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Please wait
+                        </>
+                    ) : (
+                        "Se connecter"
+                    )}
+                </Button>
                 <div className="mt-6 text-center text-sm">
                     Don&apos;t have an account?{" "}
                     <Link to="/register" className="underline">
@@ -104,5 +122,5 @@ export default function LoginForm() {
                 </div>
             </form>
         </Form>
-    )
+    );
 }

@@ -10,6 +10,9 @@ import ContactUs from "@/pages/ContactUs";
 import OurTeam from "@/pages/OurTeam";
 import TicTacToe from "@/pages/games/TicTacToe";
 import TicTacToeRoom from "@/pages/games/TicTacToeRoom";
+import MyProfile from "@/pages/MyProfile";
+import Friends from "@/pages/Friends";
+import Chat from "@/pages/Chat";
 
 
 const routesPublic = [
@@ -47,6 +50,18 @@ const routesAuthenticatedOnly = [
             {
                 path: "/games",
                 element: <GamesPage />,
+            },
+            {
+                path: "/my-profile",
+                element: <MyProfile />,
+            },
+            {
+                path: "/friends",
+                element: <Friends />,
+            },
+            {
+                path: "/chat/:id",
+                element: <Chat />,
             },
             {
                 path: "/tic-tac-toe",

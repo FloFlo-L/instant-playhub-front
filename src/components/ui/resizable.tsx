@@ -37,13 +37,13 @@ const ResizableHandle = ({
   >
     {withHandle && (
       <div
-        className="z-10 flex h-6 w-6 items-center justify-center rounded-md border bg-primary hover:bg-primary/90 text-white cursor-pointer"
+        className="z-10 flex h-6 w-6 items-center justify-center rounded-md border bg-primary hover:bg-primary/90 text-primary-foreground  cursor-pointer"
         onClick={onToggle}
       >
         {isCollapsed ? (
-          <ChevronRightIcon className="h-4 w-4 text-secondary" />
+          <ChevronRightIcon className="h-4 w-4" />
         ) : (
-          <ChevronLeftIcon className="h-4 w-4 text-secondary" />
+          <ChevronLeftIcon className="h-4 w-4" />
         )}
       </div>
     )}

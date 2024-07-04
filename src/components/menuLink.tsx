@@ -21,7 +21,7 @@ interface MenuLinkProps {
 const MenuLink = ({ item, isCollapsed }: MenuLinkProps) => {
     const { path, title, icon } = item;
     const location = useLocation();
-    const linkIsActive = location.pathname === path;
+    const linkIsActive = path === "/" ? location.pathname === path : location.pathname.startsWith(path);
 
     return (
         <>
