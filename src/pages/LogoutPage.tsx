@@ -9,9 +9,8 @@ export default function LogoutPage() {
 
     const handleLogout = () => {
         setToken();
-        navigate("/", { replace: true });
+        navigate("/login", { replace: true });
     };
-
 
     useEffect(() => {
         handleLogout();

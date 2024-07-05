@@ -13,6 +13,7 @@ import TicTacToeRoom from "@/pages/games/TicTacToeRoom";
 import MyProfile from "@/pages/MyProfile";
 import Friends from "@/pages/Friends";
 import Chat from "@/pages/Chat";
+import TermsAndConditions from "@/pages/TermsAndConditions";
 
 
 const routesPublic = [
@@ -35,6 +36,10 @@ const routesPublic = [
     {
         path: "/our-team",
         element: <OurTeam />,
+    },
+    {
+        path: "/terms-and-conditions",
+        element: <TermsAndConditions />,
     },
     {
         path: "*",

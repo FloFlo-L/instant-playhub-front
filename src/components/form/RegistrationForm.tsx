@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios, { AxiosError } from 'axios';
-
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -13,9 +12,17 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, HelpCircle } from "lucide-react";
+import { useToast } from "../ui/use-toast";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const formSchema = z.object({
     username: z.string().min(1, {
@@ -37,9 +44,13 @@ const formSchema = z.object({
     }, {
         message: "Password must have at least 8 characters, an uppercase letter, a number and a special character.",
     }),
-})
+    terms: z.literal(true, {
+        errorMap: () => ({ message: "You must accept the terms and conditions" }),
+    }),
+});
 
 export const RegistrationForm = () => {
+    const { toast } = useToast();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -50,19 +61,25 @@ export const RegistrationForm = () => {
         defaultValues: {
             username: "",
             email: "",
-            password: ""
+            password: "",
+            terms: false,
         },
-    })
+    });
 
-    // Define a submit handler.
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setLoading(true);
         setErrorMessage(null);
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, values);
+            // Extract only the required fields
+            const { username, email, password } = values;
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, { username, email, password });
 
             if (response.status === 200) {
                 navigate("/login");
+                toast({
+                    title: "Success",
+                    description: "Your account has been created. Please log in.",
+                });
             } else {
                 setErrorMessage("Error during registration: " + response.data.message);
             }
@@ -89,7 +106,21 @@ export const RegistrationForm = () => {
                     name="username"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Username *</FormLabel>
+                            <FormLabel className="flex items-center">
+                                Username
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <button type="button" className="hover:text-primary">
+                                                <HelpCircle className="ml-2 inline" size={18} />
+                                            </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            Username must be at least 4 characters long.
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </FormLabel>
                             <FormControl>
                                 <Input placeholder="MyAwesomeUsername" type="text" {...field} />
                             </FormControl>
@@ -102,7 +133,7 @@ export const RegistrationForm = () => {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email *</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <FormControl>
                                 <Input placeholder="example@gmail.com" type="email" {...field} />
                             </FormControl>
@@ -115,11 +146,40 @@ export const RegistrationForm = () => {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Password *</FormLabel>
+                            <FormLabel className="flex items-center">
+                                Password
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <button type="button" className="hover:text-primary">
+                                                <HelpCircle className="ml-2 inline" size={18} />
+                                            </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            Password must have at least 8 characters, an uppercase letter, a number and a special character.
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </FormLabel>
                             <FormControl>
                                 <Input placeholder="********" type="password" {...field} />
                             </FormControl>
                             <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="terms"
+                    render={({ field }) => (
+                        <FormItem className="flex items-center space-y-0 space-x-1">
+                            <FormControl>
+                                <Checkbox id="terms" checked={field.value} onCheckedChange={field.onChange} />
+                            </FormControl>
+                            <FormLabel className="m-0 cursor-pointer">
+                                Accept{" "}
+                                <Link to="/terms-and-conditions" className="hover:text-primary hover:underline">terms and conditions</Link>
+                            </FormLabel>
                         </FormItem>
                     )}
                 />
@@ -144,5 +204,5 @@ export const RegistrationForm = () => {
                 </div>
             </form>
         </Form>
-    )
-}
+    );
+};
