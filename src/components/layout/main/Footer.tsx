@@ -91,7 +91,7 @@ const Footer = () => {
         ))}
       </div>
       <div className="mt-6 text-center">
-        <p>&copy; 2024 JeuxDeFou. All rights reserved.</p>
+        <p>&copy; 2024 InstantPlayhub. All rights reserved.</p>
       </div>
     </footer>
   );
