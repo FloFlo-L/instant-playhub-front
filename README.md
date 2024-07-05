@@ -1,30 +1,54 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Instant Playhub front
 
-Currently, two official plugins are available:
+🔴🔴🔴 Projet Fil Rouge 🔴🔴🔴
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Outils utilisés
 
-## Expanding the ESLint configuration
+- [React](https://fr.legacy.reactjs.org/)
+- [ViteJs](https://vitejs.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [SocketIO](https://socket.io/)
+- [TailwindCss](https://tailwindcss.com/)
+- [ShadcnUi](https://ui.shadcn.com/)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Installation du projet
 
-- Configure the top-level `parserOptions` property like this:
+Cloner ou télécharger le code source de l'application
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+git clone https://github.com/FloFlo-L/instant-payhub-front.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Rentrer dans le projet
+
+```bash
+cd nom_du_projet
+```
+
+Installer les dépendances
+
+```bash
+npm install
+```
+
+Ajouter les variables d'environnement
+
+```bash
+## création du fichier .env
+touch .env
+
+## exemple de variable :
+## VITE_API_URL="http://localhost:5000"
+```
+
+## Backend du projet
+
+Le repo de la partie backend du projet est [ici](https://github.com/nicoooo972/Instant-PlayHub-api)
+
+## Notre équipe
+
+- [@Nicolas](https://github.com/nicoooo972)
+- [@Steven](https://github.com/StevenYAMBOS)
+- [@Lisa](https://github.com/lis-a)
+- [@Florian](https://github.com/FloFlo-L)
