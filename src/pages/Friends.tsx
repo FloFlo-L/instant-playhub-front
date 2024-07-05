@@ -24,14 +24,7 @@ import {
     CommandList,
 } from "@/components/ui/command";
 import { useToast } from '@/components/ui/use-toast';
-
-const friendsList = [
-    { name: "Bjorn Le Chauve", avatarUrl: "https://github.com/shadcn.png" },
-    { name: "Bob Javat", avatarUrl: "https://github.com/shadcn.png" },
-    { name: "Cocolasticaut", avatarUrl: "https://github.com/shadcn.png" },
-    { name: "Gifter", avatarUrl: "https://github.com/shadcn.png" },
-    { name: "NICO", avatarUrl: "https://github.com/shadcn.png" },
-];
+import { friendsList } from '@/fakeData';
 
 const Friends = () => {
     const { toast } = useToast();
@@ -160,7 +153,7 @@ const Friends = () => {
                                     </Avatar>
                                     <div className='flex w-full justify-between items-center'>
                                         <p className="font-bold">{friend.name}</p>
-                                        <Link to="/chat" className='hover:cursor-pointer hover:text-primary'>
+                                        <Link to={`/chat/${friend.id}`} className='hover:cursor-pointer hover:text-primary'>
                                             <FaComment size={20} />
                                         </Link>
                                     </div>

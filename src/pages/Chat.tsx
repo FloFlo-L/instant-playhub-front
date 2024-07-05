@@ -7,46 +7,27 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaComment } from 'react-icons/fa';
-
-const conversationsList = [
-    { id: 1, name: "Bjorn Le Chauve", avatarUrl: "https://github.com/shadcn.png" },
-    { id: 2, name: "Bob Javat", avatarUrl: "https://github.com/shadcn.png" },
-    { id: 3, name: "Cocolasticaut", avatarUrl: "https://github.com/shadcn.png" },
-    { id: 4, name: "Gifter", avatarUrl: "https://github.com/shadcn.png" },
-    { id: 5, name: "NICO", avatarUrl: "https://github.com/shadcn.png" },
-    { id: 6, name: "Marsoulin", avatarUrl: "https://github.com/shadcn.png" },
-    { id: 7, name: "Soupe2Legume", avatarUrl: "https://github.com/shadcn.png" },
-    { id: 8, name: "Lysahi", avatarUrl: "https://github.com/shadcn.png" },
-];
+import { Link, useParams } from 'react-router-dom';
+import { conversationsList } from '@/fakeData';
 
 const Chat = () => {
-    const [selectedConversation, setSelectedConversation] = useState(conversationsList[0]);
-    const [messages, setMessages] = useState([
-        { text: "Hello!", isOwnMessage: true },
-        { text: "Hi there!", isOwnMessage: false },
-        { text: "How are you?", isOwnMessage: true },
-        { text: "I'm good, thanks!", isOwnMessage: false },
-        { text: "Hello!", isOwnMessage: true },
-        { text: "Hi there!", isOwnMessage: false },
-        { text: "How are you?", isOwnMessage: true },
-        { text: "I'm good, thanks!", isOwnMessage: false },
-        { text: "Hello!", isOwnMessage: true },
-        { text: "Hi there!", isOwnMessage: false },
-        { text: "How are you?", isOwnMessage: true },
-        { text: "I'm good, thanks!", isOwnMessage: false },
-        { text: "Hello!", isOwnMessage: true },
-        { text: "Hi there!", isOwnMessage: false },
-        { text: "How are you?", isOwnMessage: true },
-        { text: "I'm good, thanks!", isOwnMessage: false },
-    ]);
-
+    const { id } = useParams();
+    const initialConversation = conversationsList.find(conv => conv.id === parseInt(id, 10)) || conversationsList[0];
+    const [selectedConversation, setSelectedConversation] = useState(initialConversation);
+    const [messages, setMessages] = useState(initialConversation.messages);
     const [messageInput, setMessageInput] = useState("");
 
     const handleSendMessage = (message) => {
         if (message.trim() !== "") {
-            setMessages([...messages, { text: message, isOwnMessage: true }]);
+            const newMessage = { id: messages.length + 1, text: message, isOwnMessage: true, timestamp: new Date().toISOString(), user: { avatarUrl: "https://github.com/shadcn.png", name: "You" } };
+            setMessages([...messages, newMessage]);
             setMessageInput("");
         }
+    };
+
+    const handleConversationClick = (conversation) => {
+        setSelectedConversation(conversation);
+        setMessages(conversation.messages);
     };
 
     return (
@@ -56,43 +37,62 @@ const Chat = () => {
                     <h2 className="text-xl font-bold mb-4 text-foreground">Conversations</h2>
                     <ScrollArea className="flex-grow">
                         {conversationsList.map((conversation) => (
-                            <Card
-                                key={conversation.id}
-                                className={`p-4 mb-2 flex items-center cursor-pointer ${selectedConversation.id === conversation.id ? "bg-primary text-primary-foreground" : "bg-card text-card-foreground"}`}
-                                onClick={() => setSelectedConversation(conversation)}
-                            >
-                                <Avatar className="w-10 h-10 mr-4">
-                                    <AvatarImage src={conversation.avatarUrl} alt={conversation.name} />
-                                    <AvatarFallback>{conversation.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <p>{conversation.name}</p>
-                            </Card>
+                            <Link to={`/chat/${conversation.id}`} key={conversation.id}>    
+                                <Card
+                                    className={`p-4 mb-2 flex items-center cursor-pointer ${selectedConversation.id === conversation.id ? "bg-primary text-primary-foreground" : "bg-card text-card-foreground"}`}
+                                    onClick={() => handleConversationClick(conversation)}
+                                >
+                                    <Avatar className="w-10 h-10 mr-4">
+                                        <AvatarImage src={conversation.avatarUrl} alt={conversation.name} />
+                                        <AvatarFallback>{conversation.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                    <p>{conversation.name}</p>
+                                </Card>
+                            </Link>
                         ))}
                     </ScrollArea>
                 </div>
                 <div className="w-3/4 flex flex-col h-full">
+                    <div className='p-4 border border-border'>
+                        <div className='flex items-center'>
+                            <Avatar className="w-10 h-10 mr-4">
+                                <AvatarImage src={selectedConversation.avatarUrl} alt={selectedConversation.name} />
+                                <AvatarFallback>{selectedConversation.name.charAt(0)}</AvatarFallback>
+                            </Avatar> 
+                            <p>{selectedConversation.name}</p>
+                        </div>
+                    </div>
                     <div className="flex-grow h-full overflow-hidden">
                         <div className="border-l border-border bg-background text-foreground py-4 pl-4 pr-2 h-full flex flex-col justify-end">
                             {messages.length === 0 && (
                                 <div className="flex flex-col justify-center items-center h-full">
                                     <FaComment size={75} className='text-primary'/>
-                                    <p>Start conversation with ur friend</p>
+                                    <p>Start conversation with your friend</p>
                                 </div>
                             )}
                             {messages.length > 0 && (
                                 <ScrollArea className="mb-4 pr-4 flex-grow">
-                                    <div className="flex flex-col space-y-2">
-                                        {messages.map((message, index) => (
+                                    <div className="flex flex-col space-y-4">
+                                        {messages.map((message) => (
                                             <div
-                                                key={index}
-                                                className={`flex ${message.isOwnMessage ? "justify-end" : "justify-start"}`}
+                                                key={message.id}
+                                                className={`flex items-start ${message.isOwnMessage ? "flex-row-reverse" : "flex-row"}`}
                                             >
-                                                <Card
-                                                    className={`p-2 mb-2 ${message.isOwnMessage ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
-                                                        }`}
-                                                >
-                                                    {message.text}
-                                                </Card>
+                                                <Avatar className={`w-8 h-8 ${message.isOwnMessage ? "ml-3" : "mr-3"}`}>
+                                                    <AvatarImage src={message.isOwnMessage ? "https://github.com/shadcn.png" : selectedConversation.avatarUrl} alt={message.isOwnMessage ? "You" : selectedConversation.name} />
+                                                    <AvatarFallback>{message.isOwnMessage ? "Y" : selectedConversation.name.charAt(0)}</AvatarFallback>
+                                                </Avatar>
+                                                <div className={`flex flex-col  max-w-[45%]  ${message.isOwnMessage ? "items-end" : "items-start"}`}>
+                                                    <Card
+                                                        className={`p-2 mb-2 ${message.isOwnMessage ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+                                                            }`}
+                                                    >
+                                                        {message.text}
+                                                    </Card>
+                                                    <div className="text-xs text-muted-foreground mt-1">
+                                                        {new Date(message.timestamp).toLocaleString()}
+                                                    </div>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
