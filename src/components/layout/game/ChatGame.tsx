@@ -48,7 +48,7 @@ const ChatGame = () => {
             )}
             {messages.length > 0 && (
                 <ScrollArea className="mb-4 pr-4">
-                    <div className="flex flex-col space-y-2 border border-1">
+                    <div className="flex flex-col space-y-2">
                         {messages.map((message, index) => (
                             <div
                                 key={index}
