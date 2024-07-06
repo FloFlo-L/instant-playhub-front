@@ -11,6 +11,7 @@ const LayoutMain = ({ children }: LayoutProps) => {
     return (
         <div className="min-h-screen flex">
             <main className="flex-grow flex">
+                <div className="w-1/4 bg-muted border-r"></div>
                 <div className="flex flex-grow flex-col">
                     <HeaderGame />
                     <div className="flex-grow flex justify-center items-center">
@@ -18,6 +19,7 @@ const LayoutMain = ({ children }: LayoutProps) => {
                     </div>
                     <FooterGame />
                 </div>
+                <ChatGame />
             </main>
         </div>
     );
