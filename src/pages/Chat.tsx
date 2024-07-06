@@ -32,8 +32,8 @@ const Chat = () => {
 
     return (
         <LayoutMain>
-            <div className="flex h-screen">
-                <div className="w-1/4 bg-secondary p-4 border-r border-border flex flex-col">
+            <div className="flex h-screen border-b">
+                <div className="w-1/4 bg-secondary p-4 flex flex-col">
                     <h2 className="text-xl font-bold mb-4 text-foreground">Conversations</h2>
                     <ScrollArea className="flex-grow">
                         {conversationsList.map((conversation) => (
@@ -52,8 +52,8 @@ const Chat = () => {
                         ))}
                     </ScrollArea>
                 </div>
-                <div className="w-3/4 flex flex-col h-full">
-                    <div className='p-4 border border-border'>
+                <div className="w-3/4 flex flex-col h-full border-l">
+                    <div className='p-4 border-b'>
                         <div className='flex items-center'>
                             <Avatar className="w-10 h-10 mr-4">
                                 <AvatarImage src={selectedConversation.avatarUrl} alt={selectedConversation.name} />
@@ -63,7 +63,7 @@ const Chat = () => {
                         </div>
                     </div>
                     <div className="flex-grow h-full overflow-hidden">
-                        <div className="border-l border-border bg-background text-foreground py-4 pl-4 pr-2 h-full flex flex-col justify-end">
+                        <div className="bg-background text-foreground py-4 pl-4 pr-2 h-full flex flex-col justify-end">
                             {messages.length === 0 && (
                                 <div className="flex flex-col justify-center items-center h-full">
                                     <FaComment size={75} className='text-primary'/>
