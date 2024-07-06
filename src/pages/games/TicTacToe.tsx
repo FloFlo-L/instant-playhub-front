@@ -43,7 +43,6 @@ const players: Player[] = [
         losses: 20,
         score: 200,
     },
-    // ... (other players)
 ];
 
 const TicTacToe = () => {
@@ -82,13 +81,13 @@ const TicTacToe = () => {
 
     const createRoom = () => {
         if (roomName.trim() !== "") {
-            socket.emit("create_room", { room: roomName });
+            socket.emit("create_room", { room: roomName, user_id: "123" });
             setRoomName("");
         }
     };
 
     const joinRoom = (roomName: string) => {
-        socket.emit("join_room", { room: roomName });
+        socket.emit("join_room", { room: roomName, user_id: "123" });
     };
 
     const filteredRooms = rooms.filter((room) =>
@@ -97,18 +96,21 @@ const TicTacToe = () => {
 
     return (
         <Layout>
-            <div className="container mx-auto py-12">
+            <div className="container mx-auto py-12 min-h-screen">
                 <h1 className="text-4xl font-bold text-center mb-8">TicTacToe</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="flex flex-col h-[550px]">
+                    <div className="flex flex-col max-h-[750px]">
                         <h2 className="text-2xl font-bold mb-4">Create a Room</h2>
-                        <div className="flex items-center mb-8">
+                        <div className="flex gap-5 items-center mb-8">
+                            <div className="w-1/2">
+
                             <Input
                                 className="mr-2"
                                 placeholder="Enter room name"
                                 value={roomName}
                                 onChange={(e) => setRoomName(e.target.value)}
                             />
+                            </div>
                             <Button onClick={createRoom}>
                                 <FaPlus className="mr-2" />
                                 Create Room
@@ -143,7 +145,7 @@ const TicTacToe = () => {
                             )}
                         </ScrollArea>
                     </div>
-                    <div className="flex flex-col h-[550px]">
+                    <div className="flex flex-col max-h-[750px]">
                         <h2 className="text-2xl font-bold mb-4">Top Players</h2>
                         <ScrollArea className="flex-grow">
                             <Table>
