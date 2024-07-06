@@ -18,30 +18,6 @@ const TicTacToeRoom = () => {
     const [messageInput, setMessageInput] = useState("");
     const chatEndRef = useRef<null | HTMLDivElement>(null);
 
-    useEffect(() => {
-        socket.emit("join_room", { room: roomId });
-
-        socket.on("room_joined", (data) => {
-            setCurrentPlayer(data.symbol);
-        });
-
-        socket.on("update_state", (gameState) => {
-            setBoard(gameState.board);
-        });
-
-        socket.on("new_message", (message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
-        });
-
-        socket.on("chat_history", (history) => {
-            setMessages(history);
-        });
-
-        return () => {
-            socket.disconnect();
-        };
-    }, [roomId]);
-
     const handleCardClick = (index: number) => {
         if (board[index] === null && currentPlayer) {
             const row = Math.floor(index / 3);
@@ -49,19 +25,6 @@ const TicTacToeRoom = () => {
             socket.emit("make_move", { row, col, player: currentPlayer, room: roomId });
         }
     };
-
-    const handleSendMessage = (message: string) => {
-        if (message.trim() !== "") {
-            socket.emit("send_message", { room: roomId, message });
-            setMessageInput("");
-        }
-    };
-
-    useEffect(() => {
-        if (chatEndRef.current) {
-            chatEndRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [messages]);
 
     return (
         <LayoutGame>
@@ -96,27 +59,6 @@ const TicTacToeRoom = () => {
                         ))}
                         <div ref={chatEndRef} />
                     </ScrollArea>
-                    <form
-                        className="gap-3 grid grid-cols-[1fr_auto] mt-4 w-full"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleSendMessage(messageInput);
-                        }}
-                    >
-                        <Input
-                            type="text"
-                            placeholder="Écrivez un message..."
-                            value={messageInput}
-                            onChange={(e) => setMessageInput(e.target.value)}
-                        />
-                        <Button
-                            type="submit"
-                            size="icon"
-                            style={{ opacity: messageInput.trim() === "" ? 0.5 : 1 }}
-                        >
-                            <Send className="h-4 w-4" />
-                        </Button>
-                    </form>
                 </div>
             </div>
         </LayoutGame>
