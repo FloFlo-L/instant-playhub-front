@@ -5,7 +5,6 @@ import { RegistrationPage } from "@/pages/RegistrationPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { ProtectedRoute } from "./protectedRoute";
 import LogoutPage from "@/pages/LogoutPage";
-import GamesPage from "@/pages/GamesPage";
 import ContactUs from "@/pages/ContactUs";
 import OurTeam from "@/pages/OurTeam";
 import TicTacToe from "@/pages/games/TicTacToe";
@@ -52,10 +51,6 @@ const routesAuthenticatedOnly = [
         path: "/",
         element: <ProtectedRoute />,
         children: [
-            {
-                path: "/games",
-                element: <GamesPage />,
-            },
             {
                 path: "/my-profile",
                 element: <MyProfile />,

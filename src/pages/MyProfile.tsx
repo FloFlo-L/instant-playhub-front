@@ -35,7 +35,7 @@ interface UserProfile {
 }
 
 const MyProfile = () => {
-    const { token, userInfo } = useAuth();
+    const { userInfo } = useAuth();
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,6 +52,7 @@ const MyProfile = () => {
                 profile_picture: userInfo.profile_picture,
                 username: userInfo.username,
                 email: userInfo.email,
+                created_at: userInfo.created_at, 
             });
             form.reset({
                 profile_picture: userInfo.profile_picture,
@@ -79,12 +80,11 @@ const MyProfile = () => {
             );
             toast({ title: "Profile updated successfully!" });
             setIsChanged(false);
-        } catch (error) {
-            console.error("Failed to update profile", error);
+        } catch (error: any) {
             toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
-                description: "Failed to update profile " + error.response.data.error,
+                description: "Failed to update profile " + (error.response?.data?.error || error.message),
             });
         } finally {
             setIsSubmitting(false);
@@ -98,7 +98,7 @@ const MyProfile = () => {
             reader.onloadend = () => {
                 const base64String = reader.result as string;
                 setUserProfile((prevState) => ({
-                    ...prevState,
+                    ...prevState!,
                     profile_picture: base64String,
                 }));
                 form.setValue("profile_picture", base64String);
@@ -137,7 +137,7 @@ const MyProfile = () => {
                                 <FormField
                                     control={form.control}
                                     name="profile_picture"
-                                    render={({ field }) => (
+                                    render={() => (
                                         <FormItem>
                                             <FormLabel htmlFor="picture">Picture</FormLabel>
                                             <FormControl>

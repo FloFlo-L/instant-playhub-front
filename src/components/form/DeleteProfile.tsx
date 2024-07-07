@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from "@/provider/authProvider";
 import { useToast } from "@/components/ui/use-toast";
@@ -15,7 +15,7 @@ import {
 import { Loader2 } from 'lucide-react';
 
 const DeleteProfile = () => {
-    const { token, setToken } = useAuth();
+    const { setToken } = useAuth();
     const { toast } = useToast();
     const [open, setOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,12 +28,11 @@ const DeleteProfile = () => {
             );
             toast({ title: "Account deleted successfully!" });
             setToken(null);
-        } catch (error) {
-            console.error("Failed to delete account", error);
+        } catch (error: any) {
             toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
-                description: "Failed to delete account " + error.response.data.error,
+                description: "Failed to delete account " + (error.response?.data?.error || error.message),
             });
         } finally {
             setIsSubmitting(false);

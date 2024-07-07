@@ -1,6 +1,5 @@
-import React from 'react';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import {
     Tooltip,
     TooltipContent,

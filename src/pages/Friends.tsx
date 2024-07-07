@@ -26,29 +26,36 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { friendsList } from '@/fakeData';
 
+interface Friend {
+    id: number;
+    name: string;
+    avatarUrl: string;
+}
+
 const Friends = () => {
     const { toast } = useToast();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [newFriendName, setNewFriendName] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
-    const [selectedFriend, setSelectedFriend] = useState(null);
+    const [searchResults, setSearchResults] = useState<Friend[]>([]);
+    const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
 
     const filteredFriends = friendsList.filter(friend =>
         friend.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleAddFriend = () => {
-        console.log(`Sending friend request to ${selectedFriend.name}`);
         setNewFriendName("");
         setDialogOpen(false);
-        toast({
-            title: "Request sent",
-            description: `Friend request sent to ${selectedFriend.name}`,
-        });
+        if (selectedFriend) {
+            toast({
+                title: "Request sent",
+                description: `Friend request sent to ${selectedFriend.name}`,
+            });
+        }
     };
 
-    const handleSearchChange = (value) => {
+    const handleSearchChange = (value: string) => {
         setNewFriendName(value);
         if (value.trim() === "") {
             setSearchResults([]);
@@ -63,7 +70,7 @@ const Friends = () => {
         }
     };
 
-    const handleSelectFriend = (name) => {
+    const handleSelectFriend = (name: string) => {
         setNewFriendName(name);
         const exactMatch = friendsList.find(friend => friend.name === name);
         setSelectedFriend(exactMatch || null);

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaPlus, FaDoorOpen } from "react-icons/fa";
 import { io } from "socket.io-client";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ import {
 import Layout from "@/components/layout/main/LayoutMain";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const socket = io("http://localhost:5000"); // Adjust the URL to your back-end server
+const socket = io("http://localhost:5000");
 
 interface Player {
     name: string;
@@ -103,13 +103,12 @@ const TicTacToe = () => {
                         <h2 className="text-2xl font-bold mb-4">Create a Room</h2>
                         <div className="flex gap-5 items-center mb-8">
                             <div className="w-1/2">
-
-                            <Input
-                                className="mr-2"
-                                placeholder="Enter room name"
-                                value={roomName}
-                                onChange={(e) => setRoomName(e.target.value)}
-                            />
+                                <Input
+                                    className="mr-2"
+                                    placeholder="Enter room name"
+                                    value={roomName}
+                                    onChange={(e) => setRoomName(e.target.value)}
+                                />
                             </div>
                             <Button onClick={createRoom}>
                                 <FaPlus className="mr-2" />

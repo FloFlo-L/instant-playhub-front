@@ -44,8 +44,8 @@ const formSchema = z.object({
     }, {
         message: "Password must have at least 8 characters, an uppercase letter, a number and a special character.",
     }),
-    terms: z.literal(true, {
-        errorMap: () => ({ message: "You must accept the terms and conditions" }),
+    terms: z.boolean().refine(value => value === true, {
+        message: "You must accept the terms and conditions"
     }),
 });
 
@@ -70,7 +70,6 @@ export const RegistrationForm = () => {
         setLoading(true);
         setErrorMessage(null);
         try {
-            // Extract only the required fields
             const { username, email, password } = values;
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, { username, email, password });
 
@@ -90,8 +89,6 @@ export const RegistrationForm = () => {
                     form.setError('email', { type: 'server', message: err.response.data.error_email });
                 }
                 setErrorMessage(err.response?.data?.error || err.message);
-            } else {
-                setErrorMessage(err.message);
             }
         } finally {
             setLoading(false);

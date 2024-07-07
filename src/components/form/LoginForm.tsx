@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/provider/authProvider";
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -57,8 +57,10 @@ export default function LoginForm() {
                 setErrorMessage("Error during login: " + response.data.message);
             }
         } catch (error) {
-            console.error("Request error:", );
-            setErrorMessage(error.response?.data?.error || error.message);
+            console.error("Request error:", error);
+            if (error instanceof AxiosError) {
+                setErrorMessage(error.response?.data?.error || error.message);
+            }
         } finally {
             setLoading(false);
         }
