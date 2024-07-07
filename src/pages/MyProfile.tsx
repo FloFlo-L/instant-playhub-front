@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Layout from '@/components/layout/main/LayoutMain';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useForm } from 'react-hook-form';
-import { Label } from '@/components/ui/label';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useAuth } from "@/provider/authProvider";
 import {
     Form,
     FormControl,
@@ -16,61 +17,126 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
+import DeleteProfile from '@/components/form/DeleteProfile';
 
 const formSchema = z.object({
-    avatarUrl: z.string().url().optional(),
+    profile_picture: z.string().optional(),
     username: z.string().min(1, { message: "Username is required" }),
     email: z.string().email({ message: "Email is not valid" }).optional(),
 });
 
 interface UserProfile {
-    avatarUrl: string;
+    profile_picture?: string;
     username: string;
     email: string;
+    created_at: string;
 }
 
-const defaultUserProfile: UserProfile = {
-    avatarUrl: 'https://github.com/shadcn.png',
-    username: 'DefaultUser',
-    email: 'user@example.com',
-};
-
 const MyProfile = () => {
-    const [userProfile, setUserProfile] = useState<UserProfile>(defaultUserProfile);
+    const { token, userInfo } = useAuth();
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const { toast } = useToast();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isChanged, setIsChanged] = useState(false);
 
     const form = useForm<UserProfile>({
         resolver: zodResolver(formSchema),
-        defaultValues: userProfile,
+        defaultValues: userProfile || {},
     });
 
-    const onSubmit = (data: UserProfile) => {
-        setUserProfile(data);
-        // Here you would also send the data to your backend to update the user's profile
+    useEffect(() => {
+        if (userInfo) {
+            setUserProfile({
+                profile_picture: userInfo.profile_picture,
+                username: userInfo.username,
+                email: userInfo.email,
+            });
+            form.reset({
+                profile_picture: userInfo.profile_picture,
+                username: userInfo.username,
+                email: userInfo.email,
+            });
+        }
+    }, [userInfo, form]);
+
+    const onSubmit = async (data: UserProfile) => {
+        setIsSubmitting(true);
+        const updateData: Partial<UserProfile> = {};
+
+        if (data.username !== userInfo?.username) {
+            updateData.username = data.username;
+        }
+        if (data.profile_picture && data.profile_picture !== userInfo?.profile_picture) {
+            updateData.profile_picture = data.profile_picture;
+        }
+
+        try {
+            await axios.put(
+                `${import.meta.env.VITE_API_URL}/user/update`,
+                updateData,
+            );
+            toast({ title: "Profile updated successfully!" });
+            setIsChanged(false);
+        } catch (error) {
+            console.error("Failed to update profile", error);
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "Failed to update profile " + error.response.data.error,
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
-            const avatarUrl = URL.createObjectURL(event.target.files[0]);
-            setUserProfile((prevState) => ({ ...prevState, avatarUrl }));
-            form.setValue("avatarUrl", avatarUrl);
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setUserProfile((prevState) => ({
+                    ...prevState,
+                    profile_picture: base64String,
+                }));
+                form.setValue("profile_picture", base64String);
+                setIsChanged(true);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
+    useEffect(() => {
+        const subscription = form.watch((values) => {
+            const hasChanged =
+                values.username !== userInfo?.username ||
+                values.profile_picture !== userInfo?.profile_picture;
+            setIsChanged(hasChanged);
+        });
+        return () => subscription.unsubscribe();
+    }, [form, userInfo]);
+
     return (
         <Layout>
-            <div className="container mx-auto py-12 min-h-screen">
+            <div className="container max-w-lg mx-auto  py-12 min-h-screen">
                 <h1 className="text-4xl font-bold text-center mb-8">My Profile</h1>
-                <Card className="max-w-lg mx-auto p-6">
+                <Card className="p-6">
                     <div className="flex flex-col items-center">
                         <Avatar className="w-24 h-24 mb-4">
-                            <AvatarImage src={userProfile.avatarUrl} alt={userProfile.username} />
-                            <AvatarFallback>{userProfile.username.charAt(0)}</AvatarFallback>
+                            <AvatarImage 
+                                src={userProfile?.profile_picture || 'https://github.com/shadcn.png'} 
+                                alt={userProfile?.username || 'DefaultUser'} 
+                                className='object-cover'
+                            />
+                            <AvatarFallback>{userProfile?.username.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
                                 <FormField
                                     control={form.control}
-                                    name="avatarUrl"
+                                    name="profile_picture"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel htmlFor="picture">Picture</FormLabel>
@@ -116,10 +182,21 @@ const MyProfile = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <Button type="submit" className="w-full">
-                                    Save Changes
+                                <Button type="submit" className="w-full" disabled={!isChanged || isSubmitting}>
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Please wait
+                                        </>
+                                    ) : (
+                                        "Save Changes"
+                                    )}
                                 </Button>
                             </form>
+                            <div className='flex w-full justify-between items-center mt-8'>
+                                <p className="text-sm">Joined on: {userInfo?.created_at.split(" ")[0]}</p>
+                                <DeleteProfile />
+                            </div>
                         </Form>
                     </div>
                 </Card>
