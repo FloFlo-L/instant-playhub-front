@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { FaComment } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from "@/provider/authProvider";
 
 interface Friend {
@@ -18,6 +18,7 @@ interface FriendListProps {
 
 const FriendList = ({ searchTerm }: FriendListProps) => {
     const { token } = useAuth();
+    const navigate = useNavigate();
     const [friendsList, setFriendsList] = useState<Friend[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -43,6 +44,18 @@ const FriendList = ({ searchTerm }: FriendListProps) => {
         friend.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleChatClick = async (friendId: string) => {
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/chat/check_or_create/${friendId}`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const chatId = response.data.chat_id;
+            navigate(`/chat/${chatId}`);
+        } catch (error) {
+            console.error("Failed to check or create chat", error);
+        }
+    };
+
     return (
         <div>
             {loading ? (
@@ -61,9 +74,7 @@ const FriendList = ({ searchTerm }: FriendListProps) => {
                                     </Avatar>
                                     <div className='flex w-full justify-between items-center'>
                                         <p className="font-bold">{friend.username}</p>
-                                        <Link to={`/chat/${friend._id}`} className='hover:cursor-pointer hover:text-primary'>
-                                            <FaComment size={20} />
-                                        </Link>
+                                        <FaComment size={20} className='hover:cursor-pointer hover:text-primary' onClick={() => handleChatClick(friend._id)} />
                                     </div>
                                 </div>
                             </Card>

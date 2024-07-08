@@ -27,13 +27,13 @@ export function SwitchTheme({ isCollapsed }: SwitchThemeProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent  align={`${isCollapsed ? "start" : "center"}`}>
                 <DropdownMenuItem onClick={() => setTheme("light")}>
-                    Light
+                    Clair
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    Dark
+                    Sombre
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("system")}>
-                    System
+                    Système
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

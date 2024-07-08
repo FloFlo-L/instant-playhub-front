@@ -43,8 +43,8 @@ const Friends = () => {
     return (
         <LayoutMain>
             <div className="container mx-auto py-12 min-h-screen">
-                <h1 className='text-3xl font-bold mb-2'>Friends</h1>
-                <div className="flex items-center justify-between mb-4 space-x-4">
+                <h1 className='text-3xl font-bold mb-2'>Amis</h1>
+                <div className="flex flex-col justify-between mb-4 gap-4 md:flex-row">
                     <FriendSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                     {loading ? (
                         <p>Loading...</p>

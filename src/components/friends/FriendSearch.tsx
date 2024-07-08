@@ -12,10 +12,10 @@ const FriendSearch = ({ searchTerm, setSearchTerm }: FriendSearchProps) => {
     };
 
     return (
-        <div className='relative w-2/4'>
+        <div className='relative md:w-1/2'>
             <Input
                 className="w-full pr-10"
-                placeholder="Search friends..."
+                placeholder="Recherche un ami..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />

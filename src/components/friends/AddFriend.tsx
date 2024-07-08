@@ -89,25 +89,25 @@ const AddFriend = ({ allUsers, onFriendAdded }: AddFriendProps) => {
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Add Friend</Button>
+                <Button variant="outline">Ajouter un ami</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Add Friend</DialogTitle>
+                    <DialogTitle>Ajouter un ami</DialogTitle>
                     <DialogDescription>
-                        Search and add a friend by their username
+                        Recherce et ajoute un ami par son nom pseudo.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <Command className="rounded-lg border shadow-md">
                         <CommandInput
-                            placeholder="Type a command or search..."
+                            placeholder="MyFriend"
                             value={newFriendName}
                             onValueChange={handleSearchChange}
                         />
                         <CommandList>
                             {newFriendName.trim() === "" ? (
-                                <CommandEmpty>Type something to search.</CommandEmpty>
+                                <CommandEmpty>Tape quelque chose pour rechercher.</CommandEmpty>
                             ) : (
                                 searchResults.length > 0 ? (
                                     <CommandGroup heading="Search Results">
@@ -122,14 +122,14 @@ const AddFriend = ({ allUsers, onFriendAdded }: AddFriendProps) => {
                                         ))}
                                     </CommandGroup>
                                 ) : (
-                                    <CommandEmpty>No results found.</CommandEmpty>
+                                    <CommandEmpty>Aucun résultat trouvé.</CommandEmpty>
                                 )
                             )}
                         </CommandList>
                     </Command>
                 </div>
                 <DialogFooter>
-                    <Button onClick={handleAddFriend} disabled={!selectedFriend}>Add friend</Button>
+                    <Button onClick={handleAddFriend} disabled={!selectedFriend}>Ajouter</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -52,7 +52,7 @@ const ContactUs = () => {
 
     return (
         <Layout>
-            <div className="w-full min-h-screen flex justify-center">
+            <div className="container min-h-screen justify-center">
                 <div className="flex items-center justify-center py-12 px-4 sm:px-0">
                     <div className="mx-auto grid w-[700px] gap-6">
                         <div className="">

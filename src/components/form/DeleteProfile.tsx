@@ -43,23 +43,23 @@ const DeleteProfile = () => {
         <>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                    <Button variant="destructive">Delete Account</Button>
+                    <Button variant="destructive">Supprimer mon compte</Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
-                        <DialogDescription>This action can still be undone. We don't want to see you go 🥲</DialogDescription>
+                        <DialogTitle>Es-tu sûr de vouloir supprimer ton compte ?</DialogTitle>
+                        <DialogDescription>Cette action peut toujours être annulée. Nous ne voulons pas te voir partir.</DialogDescription>
                     </DialogHeader>
                     <DialogFooter className='mt-6'>
-                        <Button onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button onClick={() => setOpen(false)}>Annuler</Button>
                         <Button variant="destructive" onClick={handleDeleteAccount} disabled={isSubmitting}>
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Deleting...
+                                    Supression...
                                 </>
                             ) : (
-                                "Delete Account"
+                                "Supprimer mon compte"
                             )}
                         </Button>
                     </DialogFooter>
