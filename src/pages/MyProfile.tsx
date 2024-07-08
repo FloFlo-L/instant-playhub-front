@@ -130,7 +130,7 @@ const MyProfile = () => {
                                 alt={userProfile?.username} 
                                 className='object-cover'
                             />
-                            <AvatarFallback className='text-3xl'>{userProfile?.username.charAt(0)}</AvatarFallback>
+                            <AvatarFallback className='uppercase text-3xl'>{userProfile?.username.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">

@@ -33,7 +33,7 @@ const AvatarSideBar = ({ isCollapsed }: AvatarSidebarProps) => {
     const renderAvatar = () => (
         <Avatar className={`w-11 h-11 text-xl ${isCollapsed ? 'm-auto' : ''}`}>
             <AvatarImage src={userInfo?.profile_picture} alt={userInfo?.username} />
-            <AvatarFallback>{userInfo?.username.charAt(0).toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="uppercase">{userInfo?.username.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
     );
 
