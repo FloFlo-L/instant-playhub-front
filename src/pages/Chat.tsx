@@ -41,9 +41,7 @@ const Chat = () => {
     useEffect(() => {
         const fetchConversations = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/user/chats`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/user/chats`);
                 const chatDetails: Conversation[] = response.data.chats;
                 setConversations(chatDetails);
                 if (id) {
@@ -63,33 +61,29 @@ const Chat = () => {
     }, [token, userInfo, id]);
 
     const fetchMessages = async (chatId: string) => {
-        try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/chat/messages/${chatId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setMessages(response.data.messages || []);
-        } catch (error) {
-            console.error("Failed to fetch messages", error);
-        }
+        // try {
+        //     const response = await axios.get(`${import.meta.env.VITE_API_URL}/chat/messages/${chatId}`);
+        //     setMessages(response.data.messages || []);
+        // } catch (error) {
+        //     console.error("Failed to fetch messages", error);
+        // }
     };
 
     const handleSendMessage = async (message: string) => {
-        if (message.trim() !== "" && selectedConversation) {
-            const newMessage: Message = { _id: `${Date.now()}`, text: message, isOwnMessage: true, timestamp: new Date().toISOString() };
-            try {
-                await axios.post(`${import.meta.env.VITE_API_URL}/chat/send_message`, {
-                    chat_id: selectedConversation.chat_id,
-                    message: newMessage.text,
-                    user_id: userInfo._id,
-                }, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                setMessages([...messages, newMessage]);
-                setMessageInput("");
-            } catch (error) {
-                console.error("Failed to send message", error);
-            }
-        }
+        // if (message.trim() !== "" && selectedConversation) {
+        //     const newMessage: Message = { _id: `${Date.now()}`, text: message, isOwnMessage: true, timestamp: new Date().toISOString() };
+        //     try {
+        //         await axios.post(`${import.meta.env.VITE_API_URL}/chat/send_message`, {
+        //             chat_id: selectedConversation.chat_id,
+        //             message: newMessage.text,
+        //             user_id: userInfo._id,
+        //         });
+        //         setMessages([...messages, newMessage]);
+        //         setMessageInput("");
+        //     } catch (error) {
+        //         console.error("Failed to send message", error);
+        //     }
+        // }
     };
 
     const handleConversationClick = (conversation: Conversation) => {
@@ -103,24 +97,20 @@ const Chat = () => {
                 <div className="w-1/4 bg-secondary p-4 flex flex-col">
                     <h2 className="text-xl font-bold mb-4 text-foreground">Messages</h2>
                     <ScrollArea className="flex-grow">
-                        {conversations.length === 0 ? (
-                            <p className="text-center text-muted-foreground">Vous n'avez pas de conversations avec des amis.</p>
-                        ) : (
-                            conversations.map((conversation) => (
-                                <Link to={`/chat/${conversation.chat_id}`} key={conversation.chat_id}>
-                                    <Card
-                                        className={`p-4 mb-2 flex items-center cursor-pointer ${selectedConversation && selectedConversation.chat_id === conversation.chat_id ? "bg-primary text-primary-foreground" : "bg-card text-card-foreground"}`}
-                                        onClick={() => handleConversationClick(conversation)}
-                                    >
-                                        <Avatar className="w-10 h-10 mr-4">
-                                            <AvatarImage src={conversation.other_user.profile_picture} alt={conversation.other_user.username} />
-                                            <AvatarFallback className='text-foreground uppercase'>{conversation.other_user.username.charAt(0)}</AvatarFallback>
-                                        </Avatar>
-                                        <p>{conversation.other_user.username}</p>
-                                    </Card>
-                                </Link>
-                            ))
-                        )}
+                        {conversations.map((conversation) => (
+                            <Link to={`/chat/${conversation.chat_id}`} key={conversation.chat_id}>
+                                <Card
+                                    className={`p-4 mb-2 flex items-center cursor-pointer ${selectedConversation && selectedConversation.chat_id === conversation.chat_id ? "bg-primary text-primary-foreground" : "bg-card text-card-foreground"}`}
+                                    onClick={() => handleConversationClick(conversation)}
+                                >
+                                    <Avatar className="w-10 h-10 mr-4">
+                                        <AvatarImage src={conversation.other_user.profile_picture} alt={conversation.other_user.username} />
+                                        <AvatarFallback className='text-foreground uppercase'>{conversation.other_user.username.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                    <p>{conversation.other_user.username}</p>
+                                </Card>
+                            </Link>
+                        ))}
                     </ScrollArea>
                 </div>
                 <div className="w-3/4 flex flex-col h-full border-l">
@@ -145,7 +135,7 @@ const Chat = () => {
                                     )}
                                     {messages.length > 0 && (
                                         <ScrollArea className="mb-4 pr-4 flex-grow">
-                                            <div className="flex flex-col space-y-4">
+                                            {/* <div className="flex flex-col space-y-4">
                                                 {messages.map((message) => (
                                                     <div
                                                         key={message._id}
@@ -168,7 +158,7 @@ const Chat = () => {
                                                         </div>
                                                     </div>
                                                 ))}
-                                            </div>
+                                            </div> */}
                                         </ScrollArea>
                                     )}
                                 </div>
