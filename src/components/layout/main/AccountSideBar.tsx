@@ -31,7 +31,7 @@ const AvatarSideBar = ({ isCollapsed }: AvatarSidebarProps) => {
     const isProfilePage = location.pathname === "/my-profile";
 
     const renderAvatar = () => (
-        <Avatar className={`w-11 h-11 ${isCollapsed ? 'm-auto' : ''}`}>
+        <Avatar className={`w-11 h-11 text-xl ${isCollapsed ? 'm-auto' : ''}`}>
             <AvatarImage src={userInfo?.profile_picture} alt={userInfo?.username} />
             <AvatarFallback>{userInfo?.username.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
@@ -68,10 +68,10 @@ const AvatarSideBar = ({ isCollapsed }: AvatarSidebarProps) => {
                 <div className="w-full">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <div className={`flex gap-4 items-center hover:cursor-pointer rounded-sm ${isProfilePage ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-muted'} ${isCollapsed ? '' : 'p-2'}`}>
+                            <div className={`flex gap-4 items-center hover:cursor-pointer rounded-sm ${isProfilePage ? 'bg-primary hover:bg-primary/90' : 'hover:bg-muted'} ${isCollapsed ? '' : 'p-2'}`}>
                                 {renderAvatar()}
                                 {!isCollapsed && (
-                                    <p className="font-bold text-primary-muted">{userInfo?.username}</p>
+                                    <p className={`font-bold ${isProfilePage ? "text-primary-foreground" : "text-primary-muted"}`}>{userInfo?.username}</p>
                                 )}
                             </div>
                         </DropdownMenuTrigger>

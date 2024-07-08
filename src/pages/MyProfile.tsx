@@ -126,11 +126,11 @@ const MyProfile = () => {
                     <div className="flex flex-col items-center">
                         <Avatar className="w-24 h-24 mb-4">
                             <AvatarImage 
-                                src={userProfile?.profile_picture || 'https://github.com/shadcn.png'} 
-                                alt={userProfile?.username || 'DefaultUser'} 
+                                src={userProfile?.profile_picture} 
+                                alt={userProfile?.username} 
                                 className='object-cover'
                             />
-                            <AvatarFallback>{userProfile?.username.charAt(0)}</AvatarFallback>
+                            <AvatarFallback className='text-3xl'>{userProfile?.username.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
