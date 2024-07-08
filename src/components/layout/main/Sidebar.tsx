@@ -59,16 +59,6 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
                     },
                 ],
             },
-            {
-                title: "Autres",
-                items: [
-                    {
-                        title: "Settings",
-                        path: "/settings",
-                        icon: <FaCog size={20} />
-                    },
-                ],
-            }
         ];
 
         if (isAuthenticated) {
