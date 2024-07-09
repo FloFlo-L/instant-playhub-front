@@ -19,12 +19,12 @@ import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
     email: z.string().min(1, {
-        message: "Email is required",
+        message: "L'eail est obligatoire",
     }).email({
-        message: "Email is not valid",
+        message: "L'email n'est pas valide",
     }),
     password: z.string().min(1, {
-        message: "Password is required",
+        message: "Mot de passe obligatoire",
     })
 });
 
@@ -57,7 +57,6 @@ export default function LoginForm() {
                 setErrorMessage("Error during login: " + response.data.message);
             }
         } catch (error) {
-            console.error("Request error:", error);
             if (error instanceof AxiosError) {
                 setErrorMessage(error.response?.data?.error || error.message);
             }
@@ -76,7 +75,7 @@ export default function LoginForm() {
                         <FormItem>
                             <FormLabel>Email *</FormLabel>
                             <FormControl>
-                                <Input placeholder="myemail@example.com" type="email" {...field} />
+                                <Input placeholder="mon-email@example.com" type="email" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -88,12 +87,12 @@ export default function LoginForm() {
                     render={({ field }) => (
                         <FormItem>
                             <div className="flex items-center">
-                                <FormLabel>Password *</FormLabel>
+                                <FormLabel>Mot de passe *</FormLabel>
                                 <Link
                                     to="/forgot-password"
                                     className="ml-auto inline-block text-sm underline"
                                 >
-                                    Forgot your password?
+                                    Mot de passe oublié ?
                                 </Link>
                             </div>
                             <FormControl>
@@ -110,16 +109,16 @@ export default function LoginForm() {
                     {loading ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Please wait
+                            Chargement
                         </>
                     ) : (
                         "Se connecter"
                     )}
                 </Button>
                 <div className="mt-6 text-center text-sm">
-                    Don&apos;t have an account?{" "}
+                    Tu n'as pas de compte ?{" "}
                     <Link to="/register" className="underline">
-                        Sign up
+                        Inscris toi
                     </Link>
                 </div>
             </form>

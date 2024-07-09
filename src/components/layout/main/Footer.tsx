@@ -22,16 +22,16 @@ interface FooterColumn {
 
 const footerData: { [key: string]: FooterColumn } = {
   games: {
-    title: "Games",
+    title: "Jeux",
     links: [
-      { to: "/tic-tac-toe", label: "Tic Tac Toe" },
+      { to: "/morpion", label: "Morpion" },
       { to: "#", label: "Uno", disabled: true },
-      { to: "#", label: "Breakout", disabled: true },
-      { to: "#", label: "Connect Four", disabled: true },
+      { to: "#", label: "Casse-briques", disabled: true },
+      { to: "#", label: "Puissance 4", disabled: true },
     ]
   },
   followUs: {
-    title: "Follow Us",
+    title: "Suivez-nous",
     links: [
       { to: "https://discord.com/", label: "Discord", icon: <FaDiscord size={15} className='mr-1' /> },
       { to: "https://x.com/", label: "Twitter", icon: <FaTwitter size={15} className='mr-1' /> },
@@ -40,12 +40,12 @@ const footerData: { [key: string]: FooterColumn } = {
     ]
   },
   contact: {
-    title: "About",
+    title: "A propos de nous",
     details: [
-      { type: "link", to: "/contact-us", label: "Contact Us" },
-      { type: "link", to: "/our-team", label: "Our Team" },
+      { type: "link", to: "/contact-us", label: "Contactez-nous" },
+      { type: "link", to: "/our-team", label: "Notre équipe" },
       { type: "text", label: "123 Rue de Paris, 75001 Paris, France" },
-      { type: "text", label: "Email: contact@jeuxdefou.com" },
+      { type: "text", label: "Email: contact@instant-playbug.com" },
     ]
   }
 };

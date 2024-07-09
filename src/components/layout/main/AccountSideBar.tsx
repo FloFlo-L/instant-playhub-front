@@ -21,42 +21,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FaUser } from "react-icons/fa";
 
-interface AvatarSidebarProps {
-    isCollapsed: boolean;
-}
-
-const AvatarSideBar = ({ isCollapsed }: AvatarSidebarProps) => {
+const AvatarSideBar = () => {
     const { token, userInfo, logout } = useAuth();
     const location = useLocation();
-    const isProfilePage = location.pathname === "/my-profile";
+    const isLoginPage = location.pathname === "/login";
 
     const renderAvatar = () => (
-        <Avatar className={`w-11 h-11 text-xl ${isCollapsed ? 'm-auto' : ''}`}>
+        <Avatar className={`w-11 h-11 text-xl`}>
             <AvatarImage src={userInfo?.profile_picture} alt={userInfo?.username} />
-            <AvatarFallback>{userInfo?.username.charAt(0).toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="uppercase">{userInfo?.username.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
-    );
-
-    const renderLoginButton = () => (
-        <Button className="w-full justify-start gap-2" variant="ghost" asChild>
-            <Link to="/login">
-                <MdLogin size={20} />Login
-            </Link>
-        </Button>
     );
 
     const renderLoginTooltip = () => (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild className="flex">
-                    <Button variant="ghost" size="icon" className="m-auto" asChild>
+                    <Button variant="ghost" size="icon" className={`${isLoginPage ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`} asChild>
                         <Link to="/login">
                             <MdLogin size={20} />
                         </Link>
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                    <p>Login</p>
+                    <p>Se connecter</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
@@ -65,32 +53,27 @@ const AvatarSideBar = ({ isCollapsed }: AvatarSidebarProps) => {
     return (
         <>
             {token ? (
-                <div className="w-full">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <div className={`flex gap-4 items-center hover:cursor-pointer rounded-sm ${isProfilePage ? 'bg-primary hover:bg-primary/90' : 'hover:bg-muted'} ${isCollapsed ? '' : 'p-2'}`}>
+                            <div className={`flex gap-4 items-center hover:cursor-pointer rounded-sm`}>
                                 {renderAvatar()}
-                                {!isCollapsed && (
-                                    <p className={`font-bold ${isProfilePage ? "text-primary-foreground" : "text-primary-muted"}`}>{userInfo?.username}</p>
-                                )}
                             </div>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align={`${isCollapsed ? "start" : "center"}`}>
+                        <DropdownMenuContent align={`end`}>
                             <DropdownMenuItem>
                                 <Link to="/my-profile" className="flex w-full">
-                                    <FaUser size={18} className="mr-2" /> My Account
+                                    <FaUser size={18} className="mr-2" /> Mon compte
                                 </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={logout}>
+                            <DropdownMenuItem className="hover:cursor-pointer" onClick={logout}>
                                 <div className="flex w-full">
-                                    <MdLogout size={18} className="mr-2" /> Logout
+                                    <MdLogout size={18} className="mr-2" /> Déconnexion
                                 </div>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                </div>
             ) : (
-                !isCollapsed ? renderLoginButton() : renderLoginTooltip()
+                renderLoginTooltip()
             )}
         </>
     );

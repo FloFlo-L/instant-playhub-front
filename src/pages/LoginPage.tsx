@@ -9,9 +9,9 @@ export function LoginPage() {
                 <div className="flex items-center justify-center py-12 px-4 sm:px-0">
                     <div className="mx-auto grid w-[400px] gap-6">
                         <div className="grid gap-2 text-center">
-                            <h1 className="text-3xl font-bold">Sign In</h1>
+                            <h1 className="text-3xl font-bold">Se connecter</h1>
                             <p className="text-balance text-muted-foreground">
-                                Enter information below to login to your account
+                                Entre les informations ci-dessous pour te connecter à ton compte
                             </p>
                         </div>
                         <LoginForm />

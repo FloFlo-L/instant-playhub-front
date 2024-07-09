@@ -4,7 +4,7 @@ const TermsAndConditions = () => {
     return (
         <LayoutMain>
             <div className="container mx-auto py-12">
-                <h1 className="text-4xl font-bold mb-8">Terms and Conditions</h1>
+                <h1 className="text-4xl font-bold mb-8">Termes et conditions</h1>
                 <div className="space-y-6 text-justify">
                     <div>
                         <h2 className="text-2xl font-bold mb-2">1. Lorem ipsum</h2>
