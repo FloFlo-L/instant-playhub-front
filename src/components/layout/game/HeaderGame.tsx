@@ -1,7 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
-const HeaderGame = () => {
+interface HeaderGameProps {
+  score1: number;
+  score2: number;
+}
+
+const HeaderGame = ({ score1, score2 }: HeaderGameProps) => {
     return (
         <header className="flex justify-between items-center p-4 bg-muted text-secondary-foreground border-b">
             <div className="flex-grow flex gap-10 items-center justify-center">
@@ -11,10 +16,10 @@ const HeaderGame = () => {
                         <AvatarImage src="https://github.com/shadcn.png" alt="Player 1" />
                         <AvatarFallback>P1</AvatarFallback>
                     </Avatar>
-                    <Badge>0</Badge>
-                </div>
-                <div className="flex items-center gap-1">
-                    <Badge>0</Badge>
+                    <Badge>{score1}</Badge>
+                    </div>
+                    <div className="flex items-center gap-1">
+                    <Badge>{score2}</Badge>
                     <Avatar>
                         <AvatarImage src="https://github.com/shadcn.png" alt="Player 2" />
                         <AvatarFallback>P2</AvatarFallback>

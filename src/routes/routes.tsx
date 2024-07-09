@@ -13,6 +13,7 @@ import MyProfile from "@/pages/MyProfile";
 import Friends from "@/pages/Friends";
 import Chat from "@/pages/Chat";
 import TermsAndConditions from "@/pages/TermsAndConditions";
+import BreakoutRoom from "@/pages/games/BreakoutRoom";
 
 
 const routesPublic = [
@@ -70,6 +71,10 @@ const routesAuthenticatedOnly = [
             {
                 path: "/tic-tac-toe/:roomId",
                 element: <TicTacToeRoom />,
+            },
+            {
+                path: "/breakout/:id",
+                element: <BreakoutRoom />,
             },
             {
                 path: "/logout",

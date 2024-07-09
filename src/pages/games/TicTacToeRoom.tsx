@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send } from "lucide-react";
 
-const socket = io("http://localhost:5000"); // Adjust the URL to your back-end server
+const socket = io(import.meta.env.VITE_API_URL);
 
 const TicTacToeRoom = () => {
     const { roomId } = useParams<{ roomId: string }>();
@@ -27,7 +27,7 @@ const TicTacToeRoom = () => {
     };
 
     return (
-        <LayoutGame>
+        <LayoutGame score1={0} score2={0}>
             <div className="flex flex-col justify-center items-center h-full">
                 <div className="grid grid-cols-3 gap-4 w-64 h-64">
                     {board.map((value, index) => (
