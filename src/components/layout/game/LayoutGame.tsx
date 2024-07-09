@@ -1,37 +1,38 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { ReactNode } from "react";
+import HeaderGame from "@/components/layout/game/HeaderGame";
+import FooterGame from "@/components/layout/game/FooterGame";
+import ChatGame from "@/components/layout/game/ChatGame";
 
-interface HeaderGameProps {
+interface LayoutProps {
+    children: ReactNode;
+    messages: { text: string, isOwnMessage: boolean }[];
+    onSendMessage: (message: string) => void;
+    messageInput: string;
+    setMessageInput: (input: string) => void;
     players: {
         player1: { username: string, avatarUrl: string, score: number },
         player2: { username: string, avatarUrl: string, score: number }
     };
 }
 
-const HeaderGame = ({ players }: HeaderGameProps) => {
-    console.log(players);
-    return (
-        <header className="flex justify-between items-center p-4 bg-muted text-secondary-foreground border-b">
-            <div className="flex-grow flex gap-10 items-center justify-center">
-                <div className="flex items-center gap-1">
-                    <p className="font-bold">{players.player1.username}</p>
-                    <Avatar>
-                        <AvatarImage src={players.player1.avatarUrl} alt={players.player1.username} />
-                        <AvatarFallback>{players.player1.username.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <Badge>{players.player1.score}</Badge>
-                </div>
-                <div className="flex items-center gap-1">
-                    <Badge>{players.player2.score}</Badge>
-                    <Avatar>
-                        <AvatarImage src={players.player2.avatarUrl} alt={players.player2.username} />
-                        <AvatarFallback>{players.player2.username.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <p className="font-bold">{players.player2.username}</p>
-                </div>
-            </div>
-        </header>
-    );
-};
+const LayoutGame = ({ children, messages, onSendMessage, messageInput, setMessageInput, players }: LayoutProps) => {
 
-export default HeaderGame;
+    console.log(players)
+    return (
+        <div className="min-h-screen flex">
+            <main className="flex-grow flex">
+                <div className="w-1/4 bg-muted border-r"></div>
+                <div className="flex flex-grow flex-col">
+                    <HeaderGame players={players} />
+                    <div className="flex-grow flex justify-center items-center">
+                        {children}
+                    </div>
+                    <FooterGame />
+                </div>
+                <ChatGame messages={messages} onSendMessage={onSendMessage} messageInput={messageInput} setMessageInput={setMessageInput} />
+            </main>
+        </div>
+    );
+}
+
+export default LayoutGame;
