@@ -17,7 +17,6 @@ interface LayoutProps {
 
 const LayoutGame = ({ children, messages, onSendMessage, messageInput, setMessageInput, players }: LayoutProps) => {
 
-    console.log(players)
     return (
         <div className="min-h-screen flex">
             <main className="flex-grow flex">
