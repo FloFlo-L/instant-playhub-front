@@ -14,28 +14,34 @@ import {
 } from '@/components/ui/dialog';
 import { Loader2 } from 'lucide-react';
 
-const DeleteProfile = () => {
-    const { setToken } = useAuth();
+interface DeleteFriendProps {
+    friendId: string;
+    friendName: string;
+    onFriendDeleted: () => void; // Callback to refresh friend list after deletion
+}
+
+const DeleteFriend: React.FC<DeleteFriendProps> = ({ friendId, friendName, onFriendDeleted }) => {
+    const { token } = useAuth();
     const { toast } = useToast();
     const [open, setOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleDeleteAccount = async () => {
+    const handleDeleteFriend = async () => {
         setIsSubmitting(true);
         try {
-            await axios.delete(
-                `${import.meta.env.VITE_API_URL}/user/delete`
+            await axios.post(
+                `${import.meta.env.VITE_API_URL}/friend/remove`,
+                { friend_id: friendId },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
-            toast({ 
-                title: "Succès", 
-                description: "Compte supprimé avec succès. Nous espérons vous revoir bientôt !"
-            });
-            setToken(null);
+            toast({ title: "Succès", description: `Ami ${friendName} supprimé avec succès !` });
+            onFriendDeleted();
+            setOpen(false);
         } catch (error: any) {
             toast({
                 variant: "destructive",
                 title: "Erreur",
-                description: `Impossible de supprimer le compte : "${(error.response?.data?.error || error.message)}"`,
+                description: `Impossible de supprimer l'ami : ${(error.response?.data?.error || error.message)}`,
             });
         } finally {
             setIsSubmitting(false);
@@ -46,23 +52,23 @@ const DeleteProfile = () => {
         <>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                    <Button variant="destructive">Supprimer mon compte</Button>
+                    <Button variant="destructive">Supprimer cet ami</Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Es-tu sûr de vouloir supprimer ton compte ?</DialogTitle>
-                        <DialogDescription>Cette action peut toujours être annulée. Nous ne voulons pas te voir partir.</DialogDescription>
+                        <DialogTitle>Es-tu sûr de vouloir supprimer cet ami ?</DialogTitle>
+                        <DialogDescription>Cette action peut toujours être annulée. Nous ne voulons pas que tu perdes ton ami.</DialogDescription>
                     </DialogHeader>
                     <DialogFooter className='mt-6'>
                         <Button onClick={() => setOpen(false)}>Annuler</Button>
-                        <Button variant="destructive" onClick={handleDeleteAccount} disabled={isSubmitting}>
+                        <Button variant="destructive" onClick={handleDeleteFriend} disabled={isSubmitting}>
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     Supression...
                                 </>
                             ) : (
-                                "Supprimer mon compte"
+                                "Supprimer cet ami"
                             )}
                         </Button>
                     </DialogFooter>
@@ -72,4 +78,4 @@ const DeleteProfile = () => {
     );
 };
 
-export default DeleteProfile;
+export default DeleteFriend;
