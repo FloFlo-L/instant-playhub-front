@@ -102,24 +102,13 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                 created_at: new Date().toISOString(),
                 token  // Ajout du token JWT dans le message
             };
-    
-            try {
-                await axios.post(`${import.meta.env.VITE_API_URL}/chat/send_message`, {
-                    chat_id: selectedConversation.chat_id,
-                    content: message,
-                }, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-    
-                if (socketRef.current) {
-                    socketRef.current.emit('message', newMessage);
-                }
-    
-                setMessageInput("");
-                scrollToBottom();
-            } catch (error) {
-                console.error("Failed to send message", error);
+
+            if (socketRef.current) {
+                socketRef.current.emit('message', newMessage);
             }
+
+            setMessageInput("");
+            scrollToBottom();
         }
     };
 
@@ -136,7 +125,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                             <p>{selectedConversation.other_user.username}</p>
                         </div>
                     </div>
-                    <div className="flex-grow h-full overflow-hidden">
+                    <div className="flex-grow h-full overflow-hidden flex flex-col">
                         <div className="bg-background text-foreground py-4 pl-4 pr-2 h-full flex flex-col justify-end">
                             {messages.length === 0 && (
                                 <div className="flex flex-col justify-center items-center h-full">
@@ -145,7 +134,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                                 </div>
                             )}
                             {messages.length > 0 && (
-                                <ScrollArea className="mb-4 pr-4 flex-grow" ref={scrollRef}>
+                                <ScrollArea className="mb-4 pr-4 items-center" ref={scrollRef}>
                                     <div className="flex flex-col space-y-4">
                                         {messages.map((message) => (
                                             <div
