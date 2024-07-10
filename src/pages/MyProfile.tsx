@@ -23,7 +23,11 @@ import DeleteProfile from '@/components/form/DeleteProfile';
 
 const formSchema = z.object({
     profile_picture: z.string().optional(),
-    username: z.string().min(1, { message: "Username is required" }),
+    username: z.string().min(1, {
+        message: "Le peusdo est obligatoire",
+    }).min(4, {
+        message: "Le peudo doit comporter au moins 4 caractères",
+    }),
     email: z.string().email({ message: "Email is not valid" }).optional(),
 });
 
@@ -35,7 +39,7 @@ interface UserProfile {
 }
 
 const MyProfile = () => {
-    const { token, userInfo } = useAuth();
+    const { userInfo } = useAuth();
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,6 +56,7 @@ const MyProfile = () => {
                 profile_picture: userInfo.profile_picture,
                 username: userInfo.username,
                 email: userInfo.email,
+                created_at: userInfo.created_at, 
             });
             form.reset({
                 profile_picture: userInfo.profile_picture,
@@ -77,14 +82,16 @@ const MyProfile = () => {
                 `${import.meta.env.VITE_API_URL}/user/update`,
                 updateData,
             );
-            toast({ title: "Profile updated successfully!" });
+            toast({ 
+                title: "Succès",
+                description: "Mise à jour du profil réussie !" 
+            });
             setIsChanged(false);
-        } catch (error) {
-            console.error("Failed to update profile", error);
+        } catch (error: any) {
             toast({
                 variant: "destructive",
-                title: "Uh oh! Something went wrong.",
-                description: "Failed to update profile " + error.response.data.error,
+                title: "Erreur",
+                description: "Échec de la mise à jour du profil : " + (error.response?.data?.error || error.message),
             });
         } finally {
             setIsSubmitting(false);
@@ -98,7 +105,7 @@ const MyProfile = () => {
             reader.onloadend = () => {
                 const base64String = reader.result as string;
                 setUserProfile((prevState) => ({
-                    ...prevState,
+                    ...prevState!,
                     profile_picture: base64String,
                 }));
                 form.setValue("profile_picture", base64String);
@@ -121,25 +128,25 @@ const MyProfile = () => {
     return (
         <Layout>
             <div className="container max-w-lg mx-auto  py-12 min-h-screen">
-                <h1 className="text-4xl font-bold text-center mb-8">My Profile</h1>
+                <h1 className="text-4xl font-bold text-center mb-8">Mon compte</h1>
                 <Card className="p-6">
                     <div className="flex flex-col items-center">
                         <Avatar className="w-24 h-24 mb-4">
                             <AvatarImage 
-                                src={userProfile?.profile_picture || 'https://github.com/shadcn.png'} 
-                                alt={userProfile?.username || 'DefaultUser'} 
+                                src={userProfile?.profile_picture} 
+                                alt={userProfile?.username} 
                                 className='object-cover'
                             />
-                            <AvatarFallback>{userProfile?.username.charAt(0)}</AvatarFallback>
+                            <AvatarFallback className='uppercase text-3xl'>{userProfile?.username.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
                                 <FormField
                                     control={form.control}
                                     name="profile_picture"
-                                    render={({ field }) => (
+                                    render={() => (
                                         <FormItem>
-                                            <FormLabel htmlFor="picture">Picture</FormLabel>
+                                            <FormLabel htmlFor="picture">Avatar</FormLabel>
                                             <FormControl>
                                                 <Input id="picture" type="file" onChange={handleAvatarChange} />
                                             </FormControl>
@@ -152,11 +159,11 @@ const MyProfile = () => {
                                     name="username"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Username</FormLabel>
+                                            <FormLabel>Pseudo</FormLabel>
                                             <FormControl>
                                                 <Input
                                                     type="text"
-                                                    placeholder="Enter your username"
+                                                    placeholder="MonPseudo"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -186,15 +193,15 @@ const MyProfile = () => {
                                     {isSubmitting ? (
                                         <>
                                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Please wait
+                                            Chargement
                                         </>
                                     ) : (
-                                        "Save Changes"
+                                        "Modifier"
                                     )}
                                 </Button>
                             </form>
                             <div className='flex w-full justify-between items-center mt-8'>
-                                <p className="text-sm">Joined on: {userInfo?.created_at.split(" ")[0]}</p>
+                                <p className="text-sm">Rejoins le : {userInfo?.created_at.split(" ")[0]}</p>
                                 <DeleteProfile />
                             </div>
                         </Form>

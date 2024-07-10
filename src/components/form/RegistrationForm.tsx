@@ -26,26 +26,26 @@ import {
 
 const formSchema = z.object({
     username: z.string().min(1, {
-        message: "Username is required",
+        message: "Le peusdo est obligatoire",
     }).min(4, {
-        message: "Username must be at least 4 characters long",
+        message: "Le peudo doit comporter au moins 4 caractères",
     }),
     email: z.string().min(1, {
-        message: "Email is required",
+        message: "L'email est obligatoire",
     }).email({
-        message: "Email is not valid",
+        message: "L'email n'est pas valide",
     }),
     password: z.string().min(1, {
-        message: "Password is required",
+        message: "Le mot de passe est obligatoire",
     }).refine(value => {
         // Password rules: at least 8 characters, an uppercase letter, a number, and a special character
         const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).{8,}$/;
         return passwordRegex.test(value);
     }, {
-        message: "Password must have at least 8 characters, an uppercase letter, a number and a special character.",
+        message: "Le mot de passe doit comporter au moins 8 caractères, une lettre majuscule, un chiffre et un caractère spécial.",
     }),
-    terms: z.literal(true, {
-        errorMap: () => ({ message: "You must accept the terms and conditions" }),
+    terms: z.boolean().refine(value => value === true, {
+        message: "Tu dois accepter les termes et conditions pour continuer."
     }),
 });
 
@@ -70,18 +70,17 @@ export const RegistrationForm = () => {
         setLoading(true);
         setErrorMessage(null);
         try {
-            // Extract only the required fields
             const { username, email, password } = values;
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, { username, email, password });
 
             if (response.status === 200) {
                 navigate("/login");
                 toast({
-                    title: "Success",
-                    description: "Your account has been created. Please log in.",
+                    title: "Succès",
+                    description: "Ton compte a été créé. Tu peux te connecter.",
                 });
             } else {
-                setErrorMessage("Error during registration: " + response.data.message);
+                setErrorMessage("Erreur lors de l'inscription : " + response.data.message);
             }
         } catch (err) {
             console.error("Request error:", err);
@@ -90,8 +89,6 @@ export const RegistrationForm = () => {
                     form.setError('email', { type: 'server', message: err.response.data.error_email });
                 }
                 setErrorMessage(err.response?.data?.error || err.message);
-            } else {
-                setErrorMessage(err.message);
             }
         } finally {
             setLoading(false);
@@ -107,7 +104,7 @@ export const RegistrationForm = () => {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className="flex items-center">
-                                Username
+                                Pseudo
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -116,13 +113,13 @@ export const RegistrationForm = () => {
                                             </button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            Username must be at least 4 characters long.
+                                            Le pseudo doit comporter au moins 4 caractères.
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
                             </FormLabel>
                             <FormControl>
-                                <Input placeholder="MyAwesomeUsername" type="text" {...field} />
+                                <Input placeholder="MonPseudo" type="text" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -147,7 +144,7 @@ export const RegistrationForm = () => {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className="flex items-center">
-                                Password
+                                Mot de passe
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -156,7 +153,7 @@ export const RegistrationForm = () => {
                                             </button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            Password must have at least 8 characters, an uppercase letter, a number and a special character.
+                                            Le mot de passe doit comporter au moins 8 caractères, une lettre majuscule, un chiffre et un caractère spécial.
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
@@ -177,8 +174,8 @@ export const RegistrationForm = () => {
                                 <Checkbox id="terms" checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="m-0 cursor-pointer">
-                                Accept{" "}
-                                <Link to="/terms-and-conditions" className="hover:text-primary hover:underline">terms and conditions</Link>
+                                Accepter les{" "}
+                                <Link to="/terms-and-conditions" className="hover:text-primary hover:underline">termes et conditions</Link>
                             </FormLabel>
                         </FormItem>
                     )}
@@ -190,16 +187,16 @@ export const RegistrationForm = () => {
                     {loading ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Please wait
+                            Chargement
                         </>
                     ) : (
-                        "Create an account"
+                        "Créer un compte"
                     )}
                 </Button>
                 <div className="mt-6 text-center text-sm">
-                    Already have an account?{" "}
+                    Tu as déjà un compte ?{" "}
                     <Link to="/login" className="underline">
-                        Sign in
+                        Se connecter
                     </Link>
                 </div>
             </form>

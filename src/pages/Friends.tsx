@@ -1,169 +1,73 @@
-import { useState } from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import LayoutMain from "@/components/layout/main/LayoutMain";
-import { Card } from "@/components/ui/card";
-import { FaComment, FaSearch, FaTimes } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
-import { useToast } from '@/components/ui/use-toast';
-import { friendsList } from '@/fakeData';
+import FriendList from '@/components/friends/FriendList';
+import AddFriend from '@/components/friends/AddFriend';
+import FriendSearch from '@/components/friends/FriendSearch';
+import { useAuth } from "@/provider/authProvider";
+
+interface User {
+    _id: string;
+    username: string;
+    profile_picture: string;
+}
 
 const Friends = () => {
-    const { toast } = useToast();
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const { token } = useAuth();
+    const [allUsers, setAllUsers] = useState<User[]>([]);
+    const [friendsList, setFriendsList] = useState<User[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [newFriendName, setNewFriendName] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
-    const [selectedFriend, setSelectedFriend] = useState(null);
 
-    const filteredFriends = friendsList.filter(friend =>
-        friend.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    useEffect(() => {
+        const fetchAllUsers = async () => {
+            try {
+                const usersResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setAllUsers(usersResponse.data.users);
+                setLoading(false);
+            } catch (error) {
+                setError('Failed to fetch users list');
+                setLoading(false);
+            }
+        };
 
-    const handleAddFriend = () => {
-        console.log(`Sending friend request to ${selectedFriend.name}`);
-        setNewFriendName("");
-        setDialogOpen(false);
-        toast({
-            title: "Request sent",
-            description: `Friend request sent to ${selectedFriend.name}`,
-        });
-    };
+        fetchAllUsers();
+    }, [token]);
 
-    const handleSearchChange = (value) => {
-        setNewFriendName(value);
-        if (value.trim() === "") {
-            setSearchResults([]);
-            setSelectedFriend(null);
-        } else {
-            const results = friendsList.filter(friend =>
-                friend.name.toLowerCase().includes(value.toLowerCase())
-            );
-            setSearchResults(results);
-            const exactMatch = results.find(friend => friend.name === value);
-            setSelectedFriend(exactMatch || null);
-        }
-    };
+    useEffect(() => {
+        const fetchFriends = async () => {
+            try {
+                const friendsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/user/friends-list`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setFriendsList(friendsResponse.data.Friends);
+                setLoading(false);
+            } catch (error) {
+                setError('Failed to fetch friends list');
+                setLoading(false);
+            }
+        };
 
-    const handleSelectFriend = (name) => {
-        setNewFriendName(name);
-        const exactMatch = friendsList.find(friend => friend.name === name);
-        setSelectedFriend(exactMatch || null);
-    };
+        fetchFriends();
+    }, [token]);
 
-    const clearSearch = () => {
-        setSearchTerm("");
+    const handleFriendAdded = (newFriend: User) => {
+        setFriendsList((prevFriendsList) => [...prevFriendsList, newFriend]);
+        console.log("Friend added:", newFriend);
     };
 
     return (
         <LayoutMain>
             <div className="container mx-auto py-12 min-h-screen">
-                <h1 className='text-3xl font-bold mb-2'>Friends</h1>
-                <div className="flex items-center justify-between mb-4">
-                    <div className='relative w-1/2'>
-                        <Input
-                            className="w-full pr-10"
-                            placeholder="Rechercher des amis"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        {searchTerm ? (
-                            <FaTimes
-                                className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                                onClick={clearSearch}
-                            />
-                        ) : (
-                            <FaSearch className="absolute right-2 top-1/2 transform -translate-y-1/2" />
-                        )}
-                    </div>
-                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button variant="outline">Add Friend</Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                                <DialogTitle>Add Friend</DialogTitle>
-                                <DialogDescription>
-                                    Search and add a friend by their username
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                                <Command className="rounded-lg border shadow-md">
-                                    <CommandInput
-                                        placeholder="Type a command or search..."
-                                        value={newFriendName}
-                                        onValueChange={handleSearchChange}
-                                    />
-                                    <CommandList>
-                                        {newFriendName.trim() === "" ? (
-                                            <CommandEmpty>Type something to search.</CommandEmpty>
-                                        ) : (
-                                            searchResults.length > 0 ? (
-                                                <CommandGroup heading="Search Results">
-                                                    {searchResults.map((result, index) => (
-                                                        <CommandItem className='hover:cursor-pointer' key={index} onSelect={() => handleSelectFriend(result.name)}>
-                                                            <Avatar className="w-6 h-6 mr-2">
-                                                                <AvatarImage src={result.avatarUrl} alt={result.name} />
-                                                                <AvatarFallback>{result.name.charAt(0)}</AvatarFallback>
-                                                            </Avatar>
-                                                            <span>{result.name}</span>
-                                                        </CommandItem>
-                                                    ))}
-                                                </CommandGroup>
-                                            ) : (
-                                                <CommandEmpty>No results found.</CommandEmpty>
-                                            )
-                                        )}
-                                    </CommandList>
-                                </Command>
-                            </div>
-                            <DialogFooter>
-                                <Button onClick={handleAddFriend} disabled={!selectedFriend}>Envoyer la demande</Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                <h1 className='text-3xl font-bold mb-2'>Amis</h1>
+                <div className="flex flex-col justify-between mb-4 gap-4 md:flex-row">
+                    <FriendSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                    <AddFriend allUsers={allUsers} onFriendAdded={handleFriendAdded} loading={loading} />
                 </div>
-
-                <div className="space-y-4">
-                    {filteredFriends.length > 0 ? (
-                        filteredFriends.map((friend, index) => (
-                            <Card key={index} className="p-4 flex items-center justify-between bg-card text-card-foreground">
-                                <div className="flex items-center w-full">
-                                    <Avatar className="w-10 h-10 mr-4">
-                                        <AvatarImage src={friend.avatarUrl} alt={friend.name} />
-                                        <AvatarFallback>{friend.name.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                    <div className='flex w-full justify-between items-center'>
-                                        <p className="font-bold">{friend.name}</p>
-                                        <Link to={`/chat/${friend.id}`} className='hover:cursor-pointer hover:text-primary'>
-                                            <FaComment size={20} />
-                                        </Link>
-                                    </div>
-                                </div>
-                            </Card>
-                        ))
-                    ) : (
-                        <p className="text-muted-foreground">You have no friends at the moment.</p>
-                    )}
-                </div>
+                <FriendList searchTerm={searchTerm} friendsList={friendsList} />
             </div>
         </LayoutMain>
     );

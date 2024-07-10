@@ -1,93 +1,78 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaPlus, FaDoorOpen } from "react-icons/fa";
 import { io } from "socket.io-client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import Layout from "@/components/layout/main/LayoutMain";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ScoreGame from "./ScoreGame";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/provider/authProvider";
 
-const socket = io("http://localhost:5000"); // Adjust the URL to your back-end server
-
-interface Player {
-    name: string;
-    avatarUrl: string;
-    games: number;
-    victories: number;
-    draws: number;
-    losses: number;
-    score: number;
-}
+const socket = io("http://localhost:5000");
 
 interface Room {
     name: string;
     playerCount: number;
 }
 
-const players: Player[] = [
-    {
-        name: "Player 1",
-        avatarUrl: "https://github.com/shadcn.png",
-        games: 100,
-        victories: 60,
-        draws: 20,
-        losses: 20,
-        score: 200,
-    },
-];
-
 const TicTacToe = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [rooms, setRooms] = useState<Room[]>([]);
     const [roomName, setRoomName] = useState("");
     const navigate = useNavigate();
+    const { toast } = useToast();
+    const { userInfo } = useAuth();
 
     useEffect(() => {
         socket.emit("get_rooms");
 
-        socket.on("update_rooms", (rooms) => {
-            const roomArray = Object.entries(rooms).map(([name, players]) => ({
+        socket.on("update_rooms", (updatedRooms: Record<string, any>[]) => {
+            const formattedRooms = Object.entries(updatedRooms).map(([name, players]) => ({
                 name,
-                playerCount: (players as any[]).length,
+                playerCount: players.length
             }));
-            setRooms(roomArray);
+            setRooms(formattedRooms);
         });
 
         socket.on("room_created", ({ room }) => {
-            alert(`Room ${room} created`);
+            toast({ title: `Room ${room} created successfully!` });
             navigate(`/tic-tac-toe/${room}`);
         });
 
         socket.on("room_joined", ({ room }) => {
-            alert(`Joined room ${room}`);
+            toast({ title: `Joined room ${room}` });
             navigate(`/tic-tac-toe/${room}`);
+        });
+
+        socket.on("error", (error) => {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
         });
 
         return () => {
             socket.off("update_rooms");
             socket.off("room_created");
             socket.off("room_joined");
+            socket.off("error");
         };
-    }, [navigate]);
+    }, [navigate, toast]);
 
     const createRoom = () => {
-        if (roomName.trim() !== "") {
-            socket.emit("create_room", { room: roomName, user_id: "123" });
+        if (roomName.trim() !== "" && userInfo) {
+            socket.emit("create_room", { room: roomName, user_id: userInfo._id });
             setRoomName("");
         }
     };
 
     const joinRoom = (roomName: string) => {
-        socket.emit("join_room", { room: roomName, user_id: "123" });
+        if (userInfo) {
+            socket.emit("join_room", { room: roomName, user_id: userInfo._id });
+        }
     };
 
     const filteredRooms = rooms.filter((room) =>
@@ -103,13 +88,12 @@ const TicTacToe = () => {
                         <h2 className="text-2xl font-bold mb-4">Create a Room</h2>
                         <div className="flex gap-5 items-center mb-8">
                             <div className="w-1/2">
-
-                            <Input
-                                className="mr-2"
-                                placeholder="Enter room name"
-                                value={roomName}
-                                onChange={(e) => setRoomName(e.target.value)}
-                            />
+                                <Input
+                                    className="mr-2"
+                                    placeholder="Enter room name"
+                                    value={roomName}
+                                    onChange={(e) => setRoomName(e.target.value)}
+                                />
                             </div>
                             <Button onClick={createRoom}>
                                 <FaPlus className="mr-2" />
@@ -145,42 +129,7 @@ const TicTacToe = () => {
                             )}
                         </ScrollArea>
                     </div>
-                    <div className="flex flex-col max-h-[750px]">
-                        <h2 className="text-2xl font-bold mb-4">Top Players</h2>
-                        <ScrollArea className="flex-grow">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>#</TableHead>
-                                        <TableHead>Player</TableHead>
-                                        <TableHead>Games</TableHead>
-                                        <TableHead>V/D/L</TableHead>
-                                        <TableHead>Score</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {players.map((player, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>{index + 1}</TableCell>
-                                            <TableCell className="flex items-center">
-                                                <Avatar className="mr-2">
-                                                    <AvatarImage src={player.avatarUrl} alt={player.name} />
-                                                    <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
-                                                </Avatar>
-                                                {player.name}
-                                            </TableCell>
-                                            <TableCell>{player.games}</TableCell>
-                                            <TableCell>{player.victories}/{player.draws}/{player.losses}</TableCell>
-                                            <TableCell>{player.score}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </ScrollArea>
-                        <div className="mt-4 text-center">
-                            <Button>See More</Button>
-                        </div>
-                    </div>
+                    <ScoreGame />
                 </div>
             </div>
         </Layout>

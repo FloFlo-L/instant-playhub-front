@@ -1,49 +1,32 @@
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import MessageCircle from "@/assets/icon/chat-messages-svgrepo-com.svg";
 import { Send } from "lucide-react";
+import { FaComment } from "react-icons/fa";
 
-const ChatGame = () => {
-    const [messages, setMessages] = useState([
-        { text: "Hello!", isOwnMessage: true },
-        { text: "Hi there!", isOwnMessage: false },
-        { text: "How are you?", isOwnMessage: true },
-        { text: "I'm good, thanks!", isOwnMessage: false },
-        { text: "Hello!", isOwnMessage: true },
-        { text: "Hi there!", isOwnMessage: false },
-        { text: "How are you?", isOwnMessage: true },
-        { text: "I'm good, thanks!", isOwnMessage: false },
-        { text: "Hello!", isOwnMessage: true },
-        { text: "Hi there!", isOwnMessage: false },
-        { text: "How are you?", isOwnMessage: true },
-        { text: "I'm good, thanks!", isOwnMessage: false },
-        { text: "Hello!", isOwnMessage: true },
-        { text: "Hi there!", isOwnMessage: false },
-        { text: "How are you?", isOwnMessage: true },
-        { text: "I'm good, thanks!", isOwnMessage: false },
-    ]);
+interface ChatGameProps {
+    messages: { text: string, isOwnMessage: boolean }[];
+    onSendMessage: (message: string) => void;
+    messageInput: string;
+    setMessageInput: (input: string) => void;
+}
 
-    const [messageInput, setMessageInput] = useState("");
+const ChatGame = ({ messages, onSendMessage, messageInput, setMessageInput }: ChatGameProps) => {
+    const chatEndRef = useRef<null | HTMLDivElement>(null);
 
-    const handleSendMessage = (message) => {
-        if (message.trim() !== "") {
-            setMessages([...messages, { text: message, isOwnMessage: true }]);
-            setMessageInput("");
+    useEffect(() => {
+        if (chatEndRef.current) {
+            chatEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
-    };
+    }, [messages]);
 
     return (
         <div className="border-l bg-muted text-card-foreground py-4 pl-4 pr-2 w-1/4 flex flex-col h-screen justify-end">
             {messages.length === 0 && (
                 <div className="flex justify-center items-center h-full">
-                    <img
-                        src={MessageCircle}
-                        alt="Message"
-                        className="w-1/2 mx-auto"
-                    />
+                    <FaComment />
                 </div>
             )}
             {messages.length > 0 && (
@@ -62,6 +45,7 @@ const ChatGame = () => {
                                 </Card>
                             </div>
                         ))}
+                        <div ref={chatEndRef} />
                     </div>
                 </ScrollArea>
             )}
@@ -77,7 +61,10 @@ const ChatGame = () => {
                 <Button
                     type="submit"
                     size="icon"
-                    onClick={() => handleSendMessage(messageInput)}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        onSendMessage(messageInput);
+                    }}
                     style={{ opacity: messageInput.trim() === "" ? 0.5 : 1 }}
                     className=""
                 >

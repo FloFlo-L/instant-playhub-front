@@ -42,6 +42,12 @@ touch .env
 ## VITE_API_URL="http://localhost:5000"
 ```
 
+Lancer le projet
+
+```bash
+npm run dev
+```
+
 ## Backend du projet
 
 Le repo de la partie backend du projet est [ici](https://github.com/nicoooo972/Instant-PlayHub-api)
