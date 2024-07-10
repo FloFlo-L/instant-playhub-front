@@ -6,25 +6,25 @@ import { FaCheck, FaUsers, FaChild, FaCrown, FaComments, FaDollarSign } from 're
 const games = [
     {
         title: 'Morpion',
-        path: '/tic-tac-toe',
+        path: '/rooms/morpion',
         enabled: true,
         image: 'https://img.freepik.com/vecteurs-premium/jeu-morpion-croix-cercle-mini-jeu-illustration-vectorielle_199784-546.jpg'
     },
     { 
         title: 'Uno', 
-        path: '/uno', 
+        path: '/rooms/uno', 
         enabled: false, 
         image: 'https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Funo%2Fhome%2FGameName_Store_Landscape_2560x1440-2560x1440-5195e8a3e06d672f97a1ee49ecea59027c14cae4.jpg' 
     },
     { 
         title: 'Casse-briques',  
-        path: '/breakout',
-        enabled: false, 
+        path: '/rooms/breakout',
+        enabled: true, 
         image: 'https://www.coolmathgames.com/sites/default/files/styles/mobile_game_image/public/Breakout_OG-logo.jpg?itok=5U0h7bVj' 
     },
     { 
         title: 'Puisance 4', 
-        path: '/coonect-four', 
+        path: '/rooms/puissance-quatre', 
         enabled: false, 
         image: 'https://store-images.s-microsoft.com/image/apps.41929.13910108538401625.dfad4587-dfb3-4aa4-8bed-b5d2dd8fc79f.54781100-f7e4-4c22-89bf-257118f9ac23?mode=scale&q=90&h=1080&w=1920' 
     },

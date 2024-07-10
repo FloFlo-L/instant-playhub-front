@@ -44,22 +44,22 @@ const Sidebar = () => {
                 items: [
                     {
                         title: "Morpion",
-                        path: "/tic-tac-toe",
+                        path: "/rooms/morpion",
                         icon: <FaHashtag size={20} />
                     },
                     {
                         title: "Uno",
-                        path: "/uno",
+                        path: "/rooms/uno",
                         icon: <FaHashtag size={20} />
                     },
                     {
                         title: "Puissance 4",
-                        path: "/connect-four",
+                        path: "/rooms/puissance-quatre",
                         icon: <FaHashtag size={20} />
                     },
                     {
                         title: "Casse-briques",
-                        path: "/breakout",
+                        path: "/rooms/breakout",
                         icon: <FaHashtag size={20} />
                     },
                 ],

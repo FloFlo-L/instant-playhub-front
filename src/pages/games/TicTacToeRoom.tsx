@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 
-const socket = io("http://localhost:5000");
+const socket = io(import.meta.env.VITE_API_URL);
 
 const TicTacToeRoom = () => {
     const { roomId } = useParams<{ roomId: string }>();
