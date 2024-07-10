@@ -106,7 +106,7 @@ const RoomList: React.FC = () => {
 
   const handleJoin = (roomName: string) => {
     if (userInfo) {
-      socket.emit("join_room", { room: roomName, user_id: userInfo._id });
+      socket.emit("join_room_" + gameType, { room: roomName, user_id: userInfo._id });
     }
   };
 
@@ -130,6 +130,9 @@ const RoomList: React.FC = () => {
   const filteredRooms = rooms.filter((room) =>
     room.room_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  console.log("----FILTERED ROOMS", filteredRooms);
+  
 
   return (
     <Layout>
@@ -164,15 +167,15 @@ const RoomList: React.FC = () => {
                 <div className="space-y-4">
                   {filteredRooms.map((room) => (
                     <div
-                      key={room._id}
+                      key={room?._id}
                       className="block p-4 border rounded-lg shadow-sm hover:bg-muted transition cursor-pointer"
                     >
                       <div className="flex justify-between items-center">
-                        <span>{room.room_name}</span>
+                        <span>{room?.room_name}</span>
                         {/* <span>{room.playerCount || 0}/2</span> */}
-                        <FaDoorOpen onClick={() => handleJoin(room.room_name)} />
-                        {room.creator_id === userInfo._id && (
-                          <Button onClick={() => handleDelete(room.room_name)}>Delete</Button>
+                        <FaDoorOpen onClick={() => handleJoin(room?.room_name)} />
+                        {room?.creator_id === userInfo?._id && (
+                          <Button onClick={() => handleDelete(room?.room_name)}>Delete</Button>
                         )}
                       </div>
                     </div>
