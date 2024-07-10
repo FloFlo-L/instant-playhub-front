@@ -10,7 +10,7 @@ import ScoreGame from "./ScoreGame";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/provider/authProvider";
 
-const socket = io("http://localhost:5000");
+const socket = io(import.meta.env.VITE_API_URL);
 
 interface Room {
     name: string;
@@ -38,12 +38,12 @@ const TicTacToe = () => {
 
         socket.on("room_created", ({ room }) => {
             toast({ title: `Room ${room} created successfully!` });
-            navigate(`/tic-tac-toe/${room}`);
+            navigate(`/morpion/${room}`);
         });
 
         socket.on("room_joined", ({ room }) => {
             toast({ title: `Joined room ${room}` });
-            navigate(`/tic-tac-toe/${room}`);
+            navigate(`/morpion/${room}`);
         });
 
         socket.on("error", (error) => {

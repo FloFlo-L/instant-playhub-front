@@ -44,7 +44,7 @@ const Sidebar = () => {
                 items: [
                     {
                         title: "Morpion",
-                        path: "/tic-tac-toe",
+                        path: "/morpion",
                         icon: <FaHashtag size={20} />
                     },
                     {
