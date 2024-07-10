@@ -40,6 +40,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
     const [messages, setMessages] = useState<Message[]>([]);
     const [messageInput, setMessageInput] = useState<string>("");
     const scrollRef = useRef<HTMLDivElement>(null);
+    const socketRef = useRef<Socket | null>(null);
 
     useEffect(() => {
         const fetchMessages = async (chatId: string) => {
@@ -61,22 +62,23 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
 
     useEffect(() => {
         const socket = io(import.meta.env.VITE_API_URL, {
-            query: { token }
+            query: { token }  // Envoie le token JWT comme argument de requête
         });
-
+        socketRef.current = socket;
+    
         socket.on('connect', () => {
             if (selectedConversation) {
                 socket.emit('join', { chat_id: selectedConversation.chat_id });
                 console.log("Connected to socket server");
             }
         });
-
+    
         socket.on('message', (message: Message) => {
             setMessages((prevMessages) => [...prevMessages, message]);
             scrollToBottom();
             console.log("Received message", message);
         });
-
+    
         return () => {
             if (selectedConversation) {
                 socket.emit('leave', { chat_id: selectedConversation.chat_id });
@@ -98,8 +100,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                 content: message,
                 Sender: userInfo._id,
                 created_at: new Date().toISOString(),
+                token  // Ajout du token JWT dans le message
             };
-
+    
             try {
                 await axios.post(`${import.meta.env.VITE_API_URL}/chat/send_message`, {
                     chat_id: selectedConversation.chat_id,
@@ -107,14 +110,11 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                 }, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-
-                const socket = io(import.meta.env.VITE_API_URL, {
-                    query: { token }
-                });
-
-                socket.emit('send_message', newMessage);
-
-                setMessages((prevMessages) => [...prevMessages, { ...newMessage, _id: `${Date.now()}` }]);
+    
+                if (socketRef.current) {
+                    socketRef.current.emit('message', newMessage);
+                }
+    
                 setMessageInput("");
                 scrollToBottom();
             } catch (error) {
