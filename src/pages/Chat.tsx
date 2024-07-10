@@ -1,3 +1,4 @@
+// src/pages/Chat.tsx
 import { useState } from 'react';
 import LayoutMain from "@/components/layout/main/LayoutMain";
 import { Card } from "@/components/ui/card";
@@ -35,6 +36,9 @@ const Chat = () => {
             <div className="flex h-screen border-b">
                 <div className="w-1/4 bg-secondary p-4 flex flex-col">
                     <h2 className="text-xl font-bold mb-4 text-foreground">Conversations</h2>
+                    <div className="createChatBtn-wrapper">
+                        <button className='createChatBtn'>Créer une conversation</button>
+                    </div>
                     <ScrollArea className="flex-grow">
                         {conversationsList.map((conversation) => (
                             <Link to={`/chat/${conversation.id}`} key={conversation.id}>    
