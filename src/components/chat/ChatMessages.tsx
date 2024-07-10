@@ -74,9 +74,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
         });
     
         socket.on('message', (message: Message) => {
+            console.log("Received message", message);
             setMessages((prevMessages) => [...prevMessages, message]);
             scrollToBottom();
-            console.log("Received message", message);
         });
     
         return () => {
