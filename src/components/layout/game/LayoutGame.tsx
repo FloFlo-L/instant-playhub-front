@@ -21,7 +21,6 @@ const LayoutGame = ({ children, messages, onSendMessage, messageInput, setMessag
     return (
         <div className="min-h-screen flex">
             <main className="flex-grow flex">
-                <div className="w-1/4 bg-muted border-r"></div>
                 <div className="flex flex-grow flex-col">
                     <HeaderGame players={players} />
                     <div className="flex-grow flex justify-center items-center">
