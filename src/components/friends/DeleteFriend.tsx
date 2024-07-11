@@ -13,6 +13,7 @@ import {
     DialogTrigger
 } from '@/components/ui/dialog';
 import { Loader2 } from 'lucide-react';
+import { FaTrash } from 'react-icons/fa';
 
 interface DeleteFriendProps {
     friendId: string;
@@ -51,8 +52,11 @@ const DeleteFriend: React.FC<DeleteFriendProps> = ({ friendId, friendName, onFri
     return (
         <>
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                    <Button variant="destructive">Supprimer cet ami</Button>
+                <DialogTrigger>
+                    <div className='flex items-center gap-1 text-destructive'>
+                        <FaTrash size={15} />
+                        <p>Retirer cet ami</p>
+                    </div>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>

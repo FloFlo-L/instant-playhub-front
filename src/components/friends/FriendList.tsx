@@ -107,7 +107,7 @@ const FriendList = ({ searchTerm, friendsList }: FriendListProps) => {
                                                         <DropdownMenuContent align={`center`}>
                                                             <DropdownMenuItem className='' onClick={() => handleChatClick(friend._id)}>
                                                                 <div className='flex gap-2 items-center hover:cursor-pointer text-primary'>
-                                                                    <FaComment size={20} />
+                                                                    <FaComment size={15} />
                                                                     <p>Envoyer MP</p>
                                                                 </div>
                                                             </DropdownMenuItem>
