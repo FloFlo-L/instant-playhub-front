@@ -14,6 +14,7 @@ import Friends from "@/pages/Friends";
 import Chat from "@/pages/Chat";
 import TermsAndConditions from "@/pages/TermsAndConditions";
 import BreakoutRoom from "@/pages/games/BreakoutRoom";
+import Room from "@/pages/Room";
 
 
 const routesPublic = [
@@ -65,11 +66,15 @@ const routesAuthenticatedOnly = [
                 element: <Chat />,
             },
             {
-                path: "/tic-tac-toe",
+                path: "/morpion",
                 element: <TicTacToe />,
             },
             {
-                path: "/tic-tac-toe/:roomId",
+                path: "/rooms/:gameType",
+                element: <Room />,
+            },
+            {
+                path: "/morpion/:roomId",
                 element: <TicTacToeRoom />,
             },
             {

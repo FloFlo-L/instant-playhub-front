@@ -30,10 +30,11 @@ interface User {
 
 interface AddFriendProps {
     allUsers: User[];
-    onFriendAdded: () => void;
+    onFriendAdded: (newFriend: User) => void;
+    loading: boolean; // Ajoutez le prop loading ici
 }
 
-const AddFriend = ({ allUsers, onFriendAdded }: AddFriendProps) => {
+const AddFriend = ({ allUsers, onFriendAdded, loading }: AddFriendProps) => {
     const { token } = useAuth();
     const { toast } = useToast();
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -49,18 +50,18 @@ const AddFriend = ({ allUsers, onFriendAdded }: AddFriendProps) => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             toast({
-                title: "Request sent",
-                description: `Friend request sent to ${selectedFriend.username}`,
+                title: "Succès",
+                description: `Nouvel ami ajouté : ${selectedFriend.username}`,
             });
             setDialogOpen(false);
             setNewFriendName("");
             setSelectedFriend(null);
-            onFriendAdded(); // Callback after a friend is added
-        } catch (error) {
+            onFriendAdded(selectedFriend); // Passer le nouvel ami ajouté à la fonction de rappel
+        } catch (error: any) {
             toast({
                 variant: "destructive",
-                title: "Error",
-                description: `Failed to send friend request: ${error.response?.data?.error || error.message}`,
+                title: "Erreur",
+                description: `Échec de l'ajout d'un nouvel ami : "${error.response?.data?.error || error.message}"`,
             });
         }
     };
@@ -89,19 +90,19 @@ const AddFriend = ({ allUsers, onFriendAdded }: AddFriendProps) => {
     return (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">Ajouter un ami</Button>
+                <Button variant="outline" disabled={loading}>Ajouter un ami</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Ajouter un ami</DialogTitle>
                     <DialogDescription>
-                        Recherce et ajoute un ami par son nom pseudo.
+                        Recherce et ajoute un ami par son pseudo.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <Command className="rounded-lg border shadow-md">
                         <CommandInput
-                            placeholder="MyFriend"
+                            placeholder="MonAmi"
                             value={newFriendName}
                             onValueChange={handleSearchChange}
                         />
@@ -114,7 +115,7 @@ const AddFriend = ({ allUsers, onFriendAdded }: AddFriendProps) => {
                                         {searchResults.map((result, index) => (
                                             <CommandItem className='hover:cursor-pointer' key={index} onSelect={() => handleSelectFriend(result.username)}>
                                                 <Avatar className="w-6 h-6 mr-2">
-                                                    <AvatarImage src={result.profile_picture} alt={result.username} />
+                                                    <AvatarImage className='object-cover' src={result.profile_picture} alt={result.username} />
                                                     <AvatarFallback className="uppercase">{result.username.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 <span>{result.username}</span>

@@ -44,22 +44,22 @@ const Sidebar = () => {
                 items: [
                     {
                         title: "Morpion",
-                        path: "/tic-tac-toe",
+                        path: "/rooms/morpion",
                         icon: <FaHashtag size={20} />
                     },
                     {
                         title: "Uno",
-                        path: "/uno",
+                        path: "/rooms/uno",
                         icon: <FaHashtag size={20} />
                     },
                     {
                         title: "Puissance 4",
-                        path: "/connect-four",
+                        path: "/rooms/puissance-quatre",
                         icon: <FaHashtag size={20} />
                     },
                     {
                         title: "Casse-briques",
-                        path: "/breakout",
+                        path: "/rooms/breakout",
                         icon: <FaHashtag size={20} />
                     },
                 ],
@@ -90,34 +90,15 @@ const Sidebar = () => {
     const menuItems = getMenuItems(Boolean(token));
 
     return (
-        // <nav>
-        //     <div className="p-2">
-        //         <AvatarSideBar isCollapsed={isCollapsed} />
-        //     </div>
-        //     {
-        //         menuItems.map((category) => (
-        //             <div key={category.title}>
-        //                 <Separator />
-        //                 <ul className="flex flex-col gap-6 p-2">
-        //                     <li key={category.title} className="flex flex-col gap-3">
-        //                         {category.items.map((item) => (
-        //                             <MenuLink key={item.title} item={item} isCollapsed={isCollapsed} />
-        //                         ))}
-        //                     </li>
-        //                 </ul>
-        //             </div>
-        //         ))
-        //     }
-        // </nav >
         <>
             <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
-                <div className="p-2">
+                <div className="px-2 sm:py-4 flex justify-center">
                     <AvatarSideBar />
                 </div>
                 {menuItems.map((category, index) => (
                     <div key={index}>
                         <Separator />
-                        <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
+                        <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
                             {category.items.map((item, index) => (
                                 <TooltipProvider key={index}>
                                     <Tooltip>

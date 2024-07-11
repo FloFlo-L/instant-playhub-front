@@ -15,6 +15,7 @@ interface User {
 const Friends = () => {
     const { token } = useAuth();
     const [allUsers, setAllUsers] = useState<User[]>([]);
+    const [friendsList, setFriendsList] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
@@ -26,9 +27,9 @@ const Friends = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setAllUsers(usersResponse.data.users);
-                setLoading(false);
             } catch (error) {
                 setError('Failed to fetch users list');
+            } finally {
                 setLoading(false);
             }
         };
@@ -36,8 +37,26 @@ const Friends = () => {
         fetchAllUsers();
     }, [token]);
 
-    const handleFriendAdded = () => {
-        console.log("Friend added");
+    useEffect(() => {
+        const fetchFriends = async () => {
+            try {
+                const friendsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/user/friends-list`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setFriendsList(friendsResponse.data.Friends);
+            } catch (error) {
+                setError('Failed to fetch friends list');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFriends();
+    }, [token]);
+
+    const handleFriendAdded = (newFriend: User) => {
+        setFriendsList((prevFriendsList) => [...prevFriendsList, newFriend]);
+        console.log("Friend added:", newFriend);
     };
 
     return (
@@ -46,15 +65,10 @@ const Friends = () => {
                 <h1 className='text-3xl font-bold mb-2'>Amis</h1>
                 <div className="flex flex-col justify-between mb-4 gap-4 md:flex-row">
                     <FriendSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-                    {loading ? (
-                        <p>Loading...</p>
-                    ) : error ? (
-                        <p className="text-destructive">{error}</p>
-                    ) : (
-                        <AddFriend allUsers={allUsers} onFriendAdded={handleFriendAdded} />
-                    )}
+                    <AddFriend allUsers={allUsers} onFriendAdded={handleFriendAdded} loading={loading} />
                 </div>
-                <FriendList searchTerm={searchTerm} />
+                {error && <div className="text-red-500 mb-4">{error}</div>}
+                <FriendList searchTerm={searchTerm} friendsList={friendsList} />
             </div>
         </LayoutMain>
     );

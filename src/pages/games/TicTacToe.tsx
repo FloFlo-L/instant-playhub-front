@@ -38,12 +38,12 @@ const TicTacToe = () => {
 
         socket.on("room_created", ({ room }) => {
             toast({ title: `Room ${room} created successfully!` });
-            navigate(`/tic-tac-toe/${room}`);
+            navigate(`/morpion/${room}`);
         });
 
         socket.on("room_joined", ({ room }) => {
             toast({ title: `Joined room ${room}` });
-            navigate(`/tic-tac-toe/${room}`);
+            navigate(`/morpion/${room}`);
         });
 
         socket.on("error", (error) => {
