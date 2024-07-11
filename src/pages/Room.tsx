@@ -130,7 +130,7 @@ const RoomList: React.FC = () => {
           <h1 className="text-4xl font-bold text-center mb-8">{gameType}</h1>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="flex flex-col max-h-[750px]">
-              <h2 className="text-2xl font-bold mb-4">Create a Room</h2>
+              <h2 className="text-2xl font-bold mb-4">Créer une partie</h2>
               <div className="flex gap-5 items-center mb-8">
                 <div className="w-1/2">
                   <Input
@@ -142,10 +142,10 @@ const RoomList: React.FC = () => {
                 </div>
                 <Button onClick={handleCreateRoom}>
                   <FaPlus className="mr-2" />
-                  Create Room
+                  Créer une partie
                 </Button>
               </div>
-              <h2 className="text-2xl font-bold mb-4">Available Rooms</h2>
+              <h2 className="text-2xl font-bold mb-4">Parties disponibles</h2>
               <Input
                   className="mb-4"
                   placeholder="Search rooms"
@@ -164,14 +164,14 @@ const RoomList: React.FC = () => {
                               <span>{room?.room_name}</span>
                               <FaDoorOpen onClick={() => handleJoin(room?._id)} />
                               {room?.creator_id === userInfo?._id && (
-                                  <Button onClick={() => handleDelete(room?.room_name)}>Delete</Button>
+                                  <Button onClick={() => handleDelete(room?.room_name)}>Supprimer</Button>
                               )}
                             </div>
                           </div>
                       ))}
                     </div>
                 ) : (
-                    <p className="flex-grow">No rooms found</p>
+                    <p className="flex-grow">Aucune partie trouvée</p>
                 )}
               </ScrollArea>
             </div>

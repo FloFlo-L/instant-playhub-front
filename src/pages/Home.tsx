@@ -24,7 +24,7 @@ const games = [
         image: 'https://www.coolmathgames.com/sites/default/files/styles/mobile_game_image/public/Breakout_OG-logo.jpg?itok=5U0h7bVj' 
     },
     { 
-        title: 'Puisance 4', 
+        title: 'Puissance 4', 
         path: '/rooms/puissance-quatre', 
         enabled: false, 
         image: 'https://store-images.s-microsoft.com/image/apps.41929.13910108538401625.dfad4587-dfb3-4aa4-8bed-b5d2dd8fc79f.54781100-f7e4-4c22-89bf-257118f9ac23?mode=scale&q=90&h=1080&w=1920' 
@@ -67,19 +67,19 @@ const Home = () => {
                     ))}
                 </div>
                 <section className="mt-16 text-center">
-                    <h2 className="text-3xl font-bold mb-4">A unique gaming platform</h2>
+                    <h2 className="text-3xl font-bold mb-4">Une plateforme de jeu unique</h2>
                     <div className="flex justify-center items-center space-x-4">
                         <div className="flex items-center">
                             <FaCheck className="text-primary mr-2" />
-                            <p>100% Free</p>
+                            <p>100% Gratuite</p>
                         </div>
                         <div className="flex items-center">
                             <FaUsers className="text-primary mr-2" />
-                            <p>Multiplayer</p>
+                            <p>Multijoueurs</p>
                         </div>
                         <div className="flex items-center">
                             <FaChild className="text-primary mr-2" />
-                            <p>Child friendly</p>
+                            <p>Adapté à tout le monde</p>
                         </div>
                     </div>
                 </section>
@@ -87,18 +87,18 @@ const Home = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         <div className="p-4">
                             <FaCrown size={40} className="mb-2 text-primary mx-auto" />
-                            <h3 className="text-lg font-bold">Worldwide ranking</h3>
-                            <p>Challenge the best players worldwide with our unique daily tournament system and become the Number One! Are you up to the challenge?</p>
+                            <h3 className="text-lg font-bold">Classement mondial</h3>
+                            <p>Défiez les meilleurs joueurs du monde grâce à notre système unique de tournois quotidiens et devenez le numéro un ! Êtes-vous prêt à relever le défi ?</p>
                         </div>
                         <div className="p-4">
                             <FaComments size={40} className="mb-2 text-primary mx-auto" />
-                            <h3 className="text-lg font-bold">Play with a friend and chat</h3>
-                            <p>Play with anyone in the world in real time by sharing a unique link. In one click you'll be connected together.</p>
+                            <h3 className="text-lg font-bold">Jouez avec un ami et discutez</h3>
+                            <p>PJouez avec n'importe qui dans le monde en temps réel en partageant un lien unique. En un clic, vous serez connectés ensemble.</p>
                         </div>
                         <div className="p-4">
                             <FaDollarSign size={40} className="mb-2 text-primary mx-auto" />
-                            <h3 className="text-lg font-bold">Support us</h3>
-                            <p>You can support us financially by subscribing to our premium membership.</p>
+                            <h3 className="text-lg font-bold">Soutenez-nous</h3>
+                            <p>Vous pouvez nous soutenir financièrement en faisant des dons.</p>
                         </div>
                     </div>
                 </section>
