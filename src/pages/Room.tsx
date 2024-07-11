@@ -9,8 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Layout from "@/components/layout/main/LayoutMain";
 import ScoreGame from "./games/ScoreGame";
 import { useAuth } from "@/provider/authProvider";
-
-const socket = io(import.meta.env.VITE_API_URL);
+import socket from "@/lib/socket";
 
 interface Room {
   _id: string;
@@ -37,38 +36,23 @@ const RoomList: React.FC = () => {
     }
 
     socket.on('room_created', (data: {room: string, creator_id: string, game_type: string}) => {
-      console.log(data);
-      console.log("JE suis la");
-      if (userInfo._id === data.creator_id) {
+      if (userInfo?._id === data.creator_id) {
         console.log("user_id : ", userInfo._id);
         console.log("creator_id : ", data.creator_id);
         toast({
           description: `Room ${data.room} a été crée !`,
         })
-        socket.emit("join_room_" + data.game_type,  { room: data.room, user_id: userInfo._id });
+        navigate(`/${gameType}/${data.room}`);
       }
     });
 
 
-
-    function onRoomJoined({ room }: { room: Room }) {
-      toast.success(`Joined room ${room.room_name}`);
-      //navigate(`/${gameType}/${room._id}`);
-    }
-
-    function onError(error: { message: string }) {
-      toast.error(error.message);
-    }
-
     socket.on("update_rooms", onUpdateRooms);
-    //socket.on("room_joined", onRoomJoined);
-    socket.on("error", onError);
+
 
     return () => {
       socket.off("update_rooms", onUpdateRooms);
       socket.off("room_created");
-      //socket.off("room_joined", onRoomJoined);
-      socket.off("error", onError);
     };
   }, [navigate, gameType]);
 

@@ -1,5 +1,3 @@
-// lib/socket.js
-
 import { io } from "socket.io-client";
 const token = localStorage.getItem('token');
 
