@@ -29,14 +29,14 @@ const players: Player[] = [
 const ScoreGame = () => {
     return (
         <div className="flex flex-col max-h-[750px]">
-        <h2 className="text-2xl font-bold mb-4">Top Players</h2>
+        <h2 className="text-2xl font-bold mb-4">Meilleurs joueurs</h2>
         <ScrollArea className="flex-grow">
             <Table>
                 <TableHeader>
                     <TableRow>
                         <TableHead>#</TableHead>
-                        <TableHead>Player</TableHead>
-                        <TableHead>Games</TableHead>
+                        <TableHead>Joueur</TableHead>
+                        <TableHead>Jeu</TableHead>
                         <TableHead>V/D/L</TableHead>
                         <TableHead>Score</TableHead>
                     </TableRow>
@@ -61,7 +61,7 @@ const ScoreGame = () => {
             </Table>
         </ScrollArea>
         <div className="mt-4 text-center">
-            <Button>See More</Button>
+            <Button>Voir plus</Button>
         </div>
     </div>
     )
