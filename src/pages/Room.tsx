@@ -35,14 +35,12 @@ const RoomList: React.FC = () => {
       setRooms(updatedRooms);
     }
 
-    socket.on('room_created', (data: {room: string, creator_id: string, game_type: string}) => {
+    socket.on('room_created', (data: {room: string, creator_id: string, game_type: string, room_id: string}) => {
       if (userInfo?._id === data.creator_id) {
-        console.log("user_id : ", userInfo._id);
-        console.log("creator_id : ", data.creator_id);
         toast({
           description: `Room ${data.room} a été crée !`,
         })
-        navigate(`/${gameType}/${data.room}`);
+        navigate(`/rooms/${gameType}/${data.room}/${data.room_id}`);
       }
     });
 
@@ -97,9 +95,12 @@ const RoomList: React.FC = () => {
     }
   };
 
-  const handleJoin = (roomId: string) => {
-    if (userInfo) {
-      socket.emit("join_room_" + roomId, { room: roomId, user_id: userInfo._id });
+  const handleJoin = (roomId: string, roomName: string, creatorId: string) => {
+    if (userInfo?._id) {
+      toast({
+        description: `Room ${roomName} a été crée !`,
+      })
+      navigate(`/rooms/${gameType}/${roomName}/${roomId}`);
     }
   };
 
@@ -162,7 +163,13 @@ const RoomList: React.FC = () => {
                           >
                             <div className="flex justify-between items-center">
                               <span>{room?.room_name}</span>
-                              <FaDoorOpen onClick={() => handleJoin(room?._id)} />
+                              <Button size={"icon"} onClick={
+                                () => handleJoin(room?._id, room?.room_name, room?.creator_id)
+                              }>
+                                <FaDoorOpen  />
+                              </Button>
+
+
                               {room?.creator_id === userInfo?._id && (
                                   <Button onClick={() => handleDelete(room?.room_name)}>Supprimer</Button>
                               )}

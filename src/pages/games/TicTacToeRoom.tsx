@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { useState, useEffect } from "react";
 import LayoutGame from "@/components/layout/game/LayoutGame";
 import { Card } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import { useAuth } from "@/provider/authProvider";
 import socket from "@/lib/socket";
 
 const TicTacToeRoom = () => {
-    const { roomName } = useParams<{ roomName: string }>();
+    const { roomName, roomId } = useParams<{ roomName: string, roomId: string }>();
     const [currentPlayer, setCurrentPlayer] = useState<"X" | "O" | null>(null);
     const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
     const [messages, setMessages] = useState<{ text: string, isOwnMessage: boolean }[]>([]);
@@ -19,20 +19,19 @@ const TicTacToeRoom = () => {
         player2: { username: "", avatarUrl: "", score: 0, id: "" }
     });
     const { toast } = useToast();
+    const navigate = useNavigate();
 
     const fetchPlayerData = async (userId: string, playerKey: string) => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/user/${userId}`);
-            console.log("response : ", response);
             const userData = response.data['user'];
-            console.log("userData", userData);
             setPlayers(prevPlayers => ({
                 ...prevPlayers,
                 [playerKey]: {
                     username: userData?.username,
                     avatarUrl: userData?.profile_picture,
                     score: 0,
-                    id: userId
+                    id: userData?._id
                 }
             }));
         } catch (error) {
@@ -51,6 +50,8 @@ const TicTacToeRoom = () => {
         } else if (players.player1.id !== userInfo._id && !players.player2.id) {
             await fetchPlayerData(userInfo._id, 'player2');
         }
+        console.log("Emitting join_room_morpion event", { room: roomName, user_id: userInfo._id });
+        socket.emit("join_room_morpion", { room: roomName, user_id: userInfo._id, room_id: roomId });
     };
 
     useEffect(() => {
@@ -68,7 +69,7 @@ const TicTacToeRoom = () => {
             }
         });
 
-        socket.emit("join_room_morpion", { room: roomName, user_id: userInfo._id });
+        handlePlayerAssignment();
 
         socket.on("game_started_morpion", () => {
             setBoard(Array(9).fill(null));
@@ -80,6 +81,19 @@ const TicTacToeRoom = () => {
         });
 
         socket.on("room_joined_morpion", (data) => {
+            setPlayers(prevPlayers => {
+                const updatedPlayers = { ...prevPlayers };
+                data.players.forEach((player: any, index: any) => {
+                    if (index === 0) {
+                        updatedPlayers.player1.username = player.username;
+                        updatedPlayers.player1.avatarUrl = player.avatarUrl;
+                    } else if (index === 1) {
+                        updatedPlayers.player2.username = player.username;
+                        updatedPlayers.player2.avatarUrl = player.avatarUrl;
+                    }
+                });
+                return updatedPlayers;
+            });
             setCurrentPlayer(data.symbol);
         });
 
@@ -101,32 +115,33 @@ const TicTacToeRoom = () => {
                 title: "Error",
                 description: error.message,
             });
+            navigate(`/`);
         });
 
-        handlePlayerAssignment();
 
         return () => {
-            socket.off("game_started");
-            socket.off("update_state");
-            socket.off("room_joined");
-            socket.off("new_message");
-            socket.off("chat_history");
-            socket.off("game_over");
-            socket.off("error");
+            socket.off("connected_morpion");
+            socket.off("game_started_morpion");
+            socket.off("update_state_morpion");
+            socket.off("room_joined_morpion");
+            socket.off("new_message_morpion");
+            socket.off("chat_history_morpion");
+            socket.off("game_over_morpion");
+            socket.off("error_morpion");
         };
-    }, [roomName, toast, userInfo, players]);
+    }, [roomName, toast, userInfo]);
 
     const handleCardClick = (index: number) => {
         if (board[index] === null && currentPlayer) {
             const row = Math.floor(index / 3);
             const col = index % 3;
-            socket.emit("make_move", { row, col, player: currentPlayer, room: roomName });
+            socket.emit("make_move_morpion", { row, col, player: currentPlayer, room: roomName });
         }
     };
 
     const handleSendMessage = (message: string) => {
         if (message.trim() !== "") {
-            socket.emit("send_message", { room: roomName, message });
+            socket.emit("send_message_morpion", { room: roomName, message });
             setMessages((prevMessages) => [...prevMessages, { text: message, isOwnMessage: true }]);
             setMessageInput("");
         }

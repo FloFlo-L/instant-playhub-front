@@ -73,7 +73,7 @@ const routesAuthenticatedOnly = [
                 element: <Room />,
             },
             {
-                path: "/rooms/morpion/:roomName",
+                path: "/rooms/morpion/:roomName/:roomId",
                 element: <TicTacToeRoom />,
             },
             {
