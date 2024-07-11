@@ -90,7 +90,7 @@ const FriendList = ({ searchTerm, friendsList }: FriendListProps) => {
                                 <div className="flex items-center justify-between w-full">
                                     <div className='flex items-center'>
                                         <Avatar className="w-10 h-10 mr-4">
-                                            <AvatarImage src={friend.profile_picture} alt={friend.username} />
+                                            <AvatarImage className='object-cover' src={friend.profile_picture} alt={friend.username} />
                                             <AvatarFallback className='uppercase'>{friend.username.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <p className="font-bold">{friend.username}</p>

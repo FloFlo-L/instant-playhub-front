@@ -28,7 +28,7 @@ const AvatarSideBar = () => {
 
     const renderAvatar = () => (
         <Avatar className={`w-11 h-11 text-xl`}>
-            <AvatarImage src={userInfo?.profile_picture} alt={userInfo?.username} />
+            <AvatarImage className='object-cover' src={userInfo?.profile_picture} alt={userInfo?.username} />
             <AvatarFallback className="uppercase">{userInfo?.username.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
     );

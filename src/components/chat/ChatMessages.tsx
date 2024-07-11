@@ -156,7 +156,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                     <div className='p-4 border-b'>
                         <div className='flex items-center'>
                             <Avatar className="w-10 h-10 mr-4">
-                                <AvatarImage src={selectedConversation.other_user.profile_picture} alt={selectedConversation.other_user.username} />
+                                <AvatarImage className='object-cover' src={selectedConversation.other_user.profile_picture} alt={selectedConversation.other_user.username} />
                                 <AvatarFallback className="uppercase">{selectedConversation.other_user.username.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <p>{selectedConversation.other_user.username}</p>
@@ -179,7 +179,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                                                 className={`flex items-start ${message.Sender === userInfo._id ? "flex-row-reverse" : "flex-row"} w-full`}
                                             >
                                                 <Avatar className={`w-8 h-8 ${message.Sender === userInfo._id ? "ml-3" : "mr-3"}`}>
-                                                    <AvatarImage src={message.Sender === userInfo._id ? userInfo.profile_picture : selectedConversation.other_user.profile_picture} alt={message.Sender === userInfo._id ? "You" : selectedConversation.other_user.username} />
+                                                    <AvatarImage className='object-cover' src={message.Sender === userInfo._id ? userInfo.profile_picture : selectedConversation.other_user.profile_picture} alt={message.Sender === userInfo._id ? "You" : selectedConversation.other_user.username} />
                                                     <AvatarFallback>{message.Sender === userInfo._id ? userInfo.username.charAt(0) : selectedConversation.other_user.username.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 {message.Sender === userInfo._id && (

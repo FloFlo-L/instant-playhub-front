@@ -156,7 +156,7 @@ const CreateChat: React.FC<CreateChatProps> = ({ onChatCreated }) => {
                                         {searchResults.map((result) => (
                                             <CommandItem className='hover:cursor-pointer' key={result._id} onSelect={() => handleSelectFriend(result.username)}>
                                                 <Avatar className="w-6 h-6 mr-2">
-                                                    <AvatarImage src={result.profile_picture} alt={result.username} />
+                                                    <AvatarImage className='object-cover' src={result.profile_picture} alt={result.username} />
                                                     <AvatarFallback className="uppercase">{result.username.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 <span>{result.username}</span>
