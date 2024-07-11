@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FaComment } from 'react-icons/fa';
+import { FaComment, FaEdit, FaEllipsisV, FaTrash } from 'react-icons/fa';
 import { useAuth } from "@/provider/authProvider";
-import { useParams } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import { Card } from '../ui/card';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface User {
     _id: string;
@@ -36,9 +36,10 @@ interface ChatMessagesProps {
 
 const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => {
     const { token, userInfo } = useAuth();
-    const { id } = useParams<{ id: string }>();
     const [messages, setMessages] = useState<Message[]>([]);
     const [messageInput, setMessageInput] = useState<string>("");
+    const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+    const [editingMessageContent, setEditingMessageContent] = useState<string>("");
     const scrollRef = useRef<HTMLDivElement>(null);
     const socketRef = useRef<Socket | null>(null);
 
@@ -65,20 +66,20 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
             query: { token }  // Envoie le token JWT comme argument de requête
         });
         socketRef.current = socket;
-    
+
         socket.on('connect', () => {
             if (selectedConversation) {
                 socket.emit('join', { chat_id: selectedConversation.chat_id });
                 console.log("Connected to socket server");
             }
         });
-    
+
         socket.on('message', (message: Message) => {
             setMessages((prevMessages) => [...prevMessages, message]);
             scrollToBottom();
             console.log("Received message", message);
         });
-    
+
         return () => {
             if (selectedConversation) {
                 socket.emit('leave', { chat_id: selectedConversation.chat_id });
@@ -112,6 +113,42 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
         }
     };
 
+    const handleEditMessage = async (messageId: string, newContent: string) => {
+        try {
+            await axios.put(`${import.meta.env.VITE_API_URL}/chat/edit_message`, {
+                message_id: messageId,
+                content: newContent
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setMessages((prevMessages) =>
+                prevMessages.map((msg) =>
+                    msg._id === messageId ? { ...msg, content: newContent } : msg
+                )
+            );
+            setEditingMessageId(null);
+            setEditingMessageContent("");
+        } catch (error) {
+            console.error("Failed to edit message", error);
+        }
+    };
+
+    const handleDeleteMessage = async (messageId: string) => {
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL}/chat/delete_message`, {
+                data: { message_id: messageId },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setMessages((prevMessages) =>
+                prevMessages.filter((msg) => msg._id !== messageId)
+            );
+        } catch (error) {
+            console.error("Failed to delete message", error);
+        }
+    };
+
     return (
         <div className="w-full md:w-3/4 flex flex-col h-full border-l">
             {selectedConversation && (
@@ -135,23 +172,64 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                             )}
                             {messages.length > 0 && (
                                 <ScrollArea className="mb-4 pr-4 items-center" ref={scrollRef}>
-                                    <div className="flex flex-col space-y-4">
+                                    <div className="flex flex-col space-y-4 w-full">
                                         {messages.map((message) => (
                                             <div
                                                 key={message._id}
-                                                className={`flex items-start ${message.Sender === userInfo._id ? "flex-row-reverse" : "flex-row"}`}
+                                                className={`flex items-start ${message.Sender === userInfo._id ? "flex-row-reverse" : "flex-row"} w-full`}
                                             >
                                                 <Avatar className={`w-8 h-8 ${message.Sender === userInfo._id ? "ml-3" : "mr-3"}`}>
                                                     <AvatarImage src={message.Sender === userInfo._id ? userInfo.profile_picture : selectedConversation.other_user.profile_picture} alt={message.Sender === userInfo._id ? "You" : selectedConversation.other_user.username} />
                                                     <AvatarFallback>{message.Sender === userInfo._id ? userInfo.username.charAt(0) : selectedConversation.other_user.username.charAt(0)}</AvatarFallback>
                                                 </Avatar>
-                                                <div className={`flex flex-col max-w-[75%] md:max-w-[45%] ${message.Sender === userInfo._id ? "items-end" : "items-start"}`}>
-                                                    <Card className={`p-2 mb-2 ${message.Sender === userInfo._id ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
-                                                        {message.content}
-                                                    </Card>
-                                                    <div className="text-xs text-muted-foreground mt-1">
-                                                        {new Date(message.created_at).toLocaleString()}
-                                                    </div>
+                                                {message.Sender === userInfo._id && (
+                                                    <DropdownMenu >
+                                                        <DropdownMenuTrigger className='ml-3 mt-2'>
+                                                            <FaEllipsisV />
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent>
+                                                            <DropdownMenuItem onClick={() => { setEditingMessageId(message._id); setEditingMessageContent(message.content); }}>
+                                                                <div className='flex items-center gap-2 text-primary'>
+                                                                    <FaEdit size={14} /> <p>Modifier</p>
+                                                                </div>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => handleDeleteMessage(message._id)}>
+                                                                <div className='flex items-center gap-2 text-destructive'>
+                                                                    <FaTrash size={14} /> <p>Supprimer</p>
+                                                                </div>
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                )}
+                                                <div className={`flex flex-col max-w-[75%] md:max-w-[75%] ${message.Sender === userInfo._id ? "items-end" : "items-start"}`}>
+                                                    {editingMessageId === message._id ? (
+                                                        <>
+                                                            <Input
+                                                                value={editingMessageContent}
+                                                                onChange={(e) => setEditingMessageContent(e.target.value)}
+                                                                className="w-full"
+                                                            />
+                                                            <div className="flex space-x-2 mt-1">
+                                                                <Button size="sm" variant="ghost" onClick={() => handleEditMessage(message._id, editingMessageContent)}>
+                                                                    Sauvegarder
+                                                                </Button>
+                                                                <Button size="sm" variant="ghost" onClick={() => { setEditingMessageId(null); setEditingMessageContent(""); }}>
+                                                                    Annuler
+                                                                </Button>
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        <div className=''>
+                                                            <Card className={`p-2 mb-2 ${message.Sender === userInfo._id ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"} break-words`}>
+                                                                {message.content}
+                                                            </Card>
+                                                            <div className="flex justify-between items-center">
+                                                                <div className="text-xs text-muted-foreground mt-1">
+                                                                    {new Date(message.created_at).toLocaleString()}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}

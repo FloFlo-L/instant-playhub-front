@@ -23,7 +23,7 @@ const TicTacToeRoom = () => {
     useEffect(() => {
         socket.emit("join_room", { room: roomId, user_id: "123" });
 
-        socket.on("game_started", (data) => {
+        socket.on("game_started", () => {
             setBoard(Array(9).fill(null));
         });
 

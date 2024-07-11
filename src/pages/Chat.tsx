@@ -1,9 +1,20 @@
-// src/pages/Chat.tsx
 import { useState } from 'react';
 import LayoutMain from "@/components/layout/main/LayoutMain";
 import ChatList from "@/components/chat/ChatList";
 import ChatMessages from '@/components/chat/ChatMessages';
 import { useParams } from 'react-router-dom';
+
+interface User {
+    _id: string;
+    username: string;
+    profile_picture: string;
+}
+
+interface Conversation {
+    chat_id: string;
+    other_user: User;
+    created_at: string;
+}
 
 const Chat = () => {
     const { id } = useParams<{ id: string }>();

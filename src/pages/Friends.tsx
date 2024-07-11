@@ -27,9 +27,9 @@ const Friends = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setAllUsers(usersResponse.data.users);
-                setLoading(false);
             } catch (error) {
                 setError('Failed to fetch users list');
+            } finally {
                 setLoading(false);
             }
         };
@@ -44,9 +44,9 @@ const Friends = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setFriendsList(friendsResponse.data.Friends);
-                setLoading(false);
             } catch (error) {
                 setError('Failed to fetch friends list');
+            } finally {
                 setLoading(false);
             }
         };
@@ -67,6 +67,7 @@ const Friends = () => {
                     <FriendSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                     <AddFriend allUsers={allUsers} onFriendAdded={handleFriendAdded} loading={loading} />
                 </div>
+                {error && <div className="text-red-500 mb-4">{error}</div>}
                 <FriendList searchTerm={searchTerm} friendsList={friendsList} />
             </div>
         </LayoutMain>
