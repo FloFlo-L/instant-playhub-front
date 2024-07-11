@@ -2,6 +2,7 @@ import Layout from '@/components/layout/main/LayoutMain';
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { FaCheck, FaUsers, FaChild, FaCrown, FaComments, FaDollarSign } from 'react-icons/fa';
+import Logo from "../../public/vite.svg";
 
 const games = [
     {
@@ -34,7 +35,10 @@ const Home = () => {
     return (
         <Layout>
             <div className="container mx-auto py-12">
-                <h1 className="text-4xl font-bold mb-4">PlayHub</h1>
+                <div className='flex gap-3 items-center justify-center mb-8'>
+                    <img src={Logo}/>
+                    <h1 className="text-3xl md:text-5xl font-bold mb-4">PlayHub</h1>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {games.map((game) => (
                         <div key={game.title} className="max-w-xs mx-auto w-full">
