@@ -23,9 +23,9 @@ interface Conversation {
 
 interface ChatListProps {
     conversations: Conversation[];
-    setConversations: (conversations: Conversation[]) => void;
+    setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>;
     selectedConversation: Conversation | null;
-    setSelectedConversation: (conversation: Conversation | null) => void;
+    setSelectedConversation: React.Dispatch<React.SetStateAction<Conversation | null>>;
 }
 
 const ChatList: React.FC<ChatListProps> = ({ conversations, setConversations, selectedConversation, setSelectedConversation }) => {
@@ -65,12 +65,12 @@ const ChatList: React.FC<ChatListProps> = ({ conversations, setConversations, se
     };
 
     const handleChatDeleted = (deletedChatId: string) => {
-        setConversations(prevConversations => prevConversations.filter(conversation => conversation.chat_id !== deletedChatId));
+        setConversations((prevConversations) => prevConversations.filter((conversation) => conversation.chat_id !== deletedChatId));
         setSelectedConversation(null);
     };
 
     const handleChatCreated = (newChat: Conversation) => {
-        setConversations(prevConversations => [...prevConversations, newChat]);
+        setConversations((prevConversations) => [...prevConversations, newChat]);
         setSelectedConversation(newChat);
     };
 

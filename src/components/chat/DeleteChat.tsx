@@ -12,7 +12,6 @@ import { useState } from "react";
 import { Loader2 } from 'lucide-react';
 import { FaTimes } from 'react-icons/fa';
 import axios from 'axios';
-import { useAuth } from "@/provider/authProvider";
 import { useToast } from '@/components/ui/use-toast';
 
 interface DeleteChatDialogProps {
@@ -45,7 +44,7 @@ const DeleteChat: React.FC<DeleteChatDialogProps> = ({ chatId, onChatDeleted }) 
             });
             setOpen(false);
             onChatDeleted();
-        } catch (error) {
+        } catch (error: any) {
             toast({
                 variant: "destructive",
                 title: "Erreur",

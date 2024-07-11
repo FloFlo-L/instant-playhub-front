@@ -57,7 +57,7 @@ const AddFriend = ({ allUsers, onFriendAdded, loading }: AddFriendProps) => {
             setNewFriendName("");
             setSelectedFriend(null);
             onFriendAdded(selectedFriend); // Passer le nouvel ami ajouté à la fonction de rappel
-        } catch (error) {
+        } catch (error: any) {
             toast({
                 variant: "destructive",
                 title: "Erreur",
