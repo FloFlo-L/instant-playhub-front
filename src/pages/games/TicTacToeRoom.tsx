@@ -15,26 +15,34 @@ const TicTacToeRoom = () => {
     const [messageInput, setMessageInput] = useState("");
     const { userInfo } = useAuth();
     const [players, setPlayers] = useState({
-        player1: { username: "", avatarUrl: "", score: 0, id: "" },
-        player2: { username: "", avatarUrl: "", score: 0, id: "" }
+        player1: { username: "", avatarUrl: "", score: 0, id: "", symbol: "" },
+        player2: { username: "", avatarUrl: "", score: 0, id: "", symbol: "" }
     });
     const { toast } = useToast();
     const navigate = useNavigate();
-    const hasJoinedRoom = useRef(false); // This ref will help us avoid multiple emits
+    const hasJoinedRoom = useRef(false);
+    const playerSymbol = useRef("");
 
-    const fetchPlayerData = async (userId: string, playerKey: string) => {
+    const fetchPlayerData = async (userId, playerKey) => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/user/${userId}`);
-            const userData = response.data['user'];
+            const userData = response.data;
             setPlayers(prevPlayers => ({
                 ...prevPlayers,
                 [playerKey]: {
                     username: userData?.username,
                     avatarUrl: userData?.profile_picture,
                     score: 0,
-                    id: userData?._id
+                    id: userData?._id,
+                    symbol: playerKey === 'player1' ? 'X' : 'O'  // Assign symbol based on player key
                 }
             }));
+            console.log("player playerKey", playerKey);
+            if (playerKey === 'player1') {
+                playerSymbol.current = 'X';
+            } else {
+                playerSymbol.current = 'O';
+            }
         } catch (error) {
             console.error(`Failed to fetch player data for ${playerKey}:`, error);
             toast({
@@ -52,7 +60,6 @@ const TicTacToeRoom = () => {
             await fetchPlayerData(userInfo._id, 'player2');
         }
         if (!hasJoinedRoom.current) {
-            console.log("Emitting join_room_morpion event", { room: roomName, user_id: userInfo._id, room_id: roomId });
             socket.emit("join_room_morpion", { room: roomName, user_id: userInfo._id, room_id: roomId });
             hasJoinedRoom.current = true;
         }
@@ -77,6 +84,7 @@ const TicTacToeRoom = () => {
 
         socket.on("game_started_morpion", () => {
             setBoard(Array(9).fill(null));
+            setCurrentPlayer('X');
         });
 
         socket.on("update_state_morpion", (gameState) => {
@@ -87,18 +95,26 @@ const TicTacToeRoom = () => {
         socket.on("room_joined_morpion", (data) => {
             setPlayers(prevPlayers => {
                 const updatedPlayers = { ...prevPlayers };
-                data.players.forEach((player: any, index: any) => {
+                data.players.forEach((player, index) => {
                     if (index === 0) {
                         updatedPlayers.player1.username = player.username;
                         updatedPlayers.player1.avatarUrl = player.avatarUrl;
+                        updatedPlayers.player1.symbol = 'X';
                     } else if (index === 1) {
                         updatedPlayers.player2.username = player.username;
                         updatedPlayers.player2.avatarUrl = player.avatarUrl;
+                        updatedPlayers.player2.symbol = 'O';
                     }
                 });
                 return updatedPlayers;
             });
-            setCurrentPlayer(data.symbol);
+
+            if (data.players.length === 2) {
+                socket.emit("start_game_morpion", { room: roomId });
+                toast({
+                    title: "La partie commence !"
+                });
+            }
         });
 
         socket.on("new_message_morpion", (message) => {
@@ -119,7 +135,6 @@ const TicTacToeRoom = () => {
                 title: "Error",
                 description: error.message,
             });
-            navigate(`/`);
         });
 
         return () => {
@@ -134,17 +149,17 @@ const TicTacToeRoom = () => {
         };
     }, [roomName, toast, userInfo]);
 
-    const handleCardClick = (index: number) => {
-        if (board[index] === null && currentPlayer) {
+    const handleCardClick = (index) => {
+        if (board[index] === null && currentPlayer === playerSymbol.current) {
             const row = Math.floor(index / 3);
             const col = index % 3;
-            socket.emit("make_move_morpion", { row, col, player: currentPlayer, room: roomName });
+            socket.emit("make_move_morpion", { row, col, player: playerSymbol.current, room: roomId });
         }
     };
 
-    const handleSendMessage = (message: string) => {
+    const handleSendMessage = (message) => {
         if (message.trim() !== "") {
-            socket.emit("send_message_morpion", { room: roomName, message });
+            socket.emit("send_message_morpion", { room: roomId, message });
             setMessages((prevMessages) => [...prevMessages, { text: message, isOwnMessage: true }]);
             setMessageInput("");
         }
@@ -165,14 +180,15 @@ const TicTacToeRoom = () => {
                                     {value}
                                 </span>
                             )}
-                            {!value && currentPlayer && (
+                            {!value && currentPlayer === playerSymbol.current && (
                                 <span className="absolute inset-0 flex justify-center items-center text-4xl text-gray-400 opacity-0 hover:opacity-100">
-                                    {currentPlayer}
+                                    {playerSymbol.current}
                                 </span>
                             )}
                         </Card>
                     ))}
                 </div>
+                <p>Je joue le {playerSymbol.current}</p>
                 <p className="text-3xl font-bold text-center mt-8">TicTacToe Room: {roomName}</p>
             </div>
         </LayoutGame>

@@ -10,14 +10,13 @@ interface LayoutProps {
     messageInput: string;
     setMessageInput: (input: string) => void;
     players: {
-        player1: { username: string, avatarUrl: string, score: number },
-        player2: { username: string, avatarUrl: string, score: number }
+        player1: { username: string, avatarUrl: string, score: number, symbol: string},
+        player2: { username: string, avatarUrl: string, score: number, symbol: string}
     };
 }
 
 const LayoutGame = ({ children, messages, onSendMessage, messageInput, setMessageInput, players }: LayoutProps) => {
-
-    console.log(players)
+    console.log("player layout game", players)
     return (
         <div className="min-h-screen flex">
             <main className="flex-grow flex">
