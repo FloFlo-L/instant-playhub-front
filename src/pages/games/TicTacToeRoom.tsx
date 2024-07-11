@@ -1,5 +1,5 @@
-import {useNavigate, useParams} from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import LayoutGame from "@/components/layout/game/LayoutGame";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,6 +20,7 @@ const TicTacToeRoom = () => {
     });
     const { toast } = useToast();
     const navigate = useNavigate();
+    const hasJoinedRoom = useRef(false); // This ref will help us avoid multiple emits
 
     const fetchPlayerData = async (userId: string, playerKey: string) => {
         try {
@@ -50,8 +51,11 @@ const TicTacToeRoom = () => {
         } else if (players.player1.id !== userInfo._id && !players.player2.id) {
             await fetchPlayerData(userInfo._id, 'player2');
         }
-        console.log("Emitting join_room_morpion event", { room: roomName, user_id: userInfo._id });
-        socket.emit("join_room_morpion", { room: roomName, user_id: userInfo._id, room_id: roomId });
+        if (!hasJoinedRoom.current) {
+            console.log("Emitting join_room_morpion event", { room: roomName, user_id: userInfo._id, room_id: roomId });
+            socket.emit("join_room_morpion", { room: roomName, user_id: userInfo._id, room_id: roomId });
+            hasJoinedRoom.current = true;
+        }
     };
 
     useEffect(() => {
@@ -117,7 +121,6 @@ const TicTacToeRoom = () => {
             });
             navigate(`/`);
         });
-
 
         return () => {
             socket.off("connected_morpion");

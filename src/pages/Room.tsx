@@ -95,7 +95,7 @@ const RoomList: React.FC = () => {
     }
   };
 
-  const handleJoin = (roomId: string, roomName: string, creatorId: string) => {
+  const handleJoin = (roomId: string, roomName: string) => {
     if (userInfo?._id) {
       toast({
         description: `Room ${roomName} a été crée !`,
@@ -164,7 +164,7 @@ const RoomList: React.FC = () => {
                             <div className="flex justify-between items-center">
                               <span>{room?.room_name}</span>
                               <Button size={"icon"} onClick={
-                                () => handleJoin(room?._id, room?.room_name, room?.creator_id)
+                                () => handleJoin(room?._id, room?.room_name)
                               }>
                                 <FaDoorOpen  />
                               </Button>
