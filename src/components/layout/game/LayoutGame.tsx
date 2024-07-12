@@ -9,19 +9,22 @@ interface LayoutProps {
     onSendMessage: (message: string) => void;
     messageInput: string;
     setMessageInput: (input: string) => void;
-    players: {
-        player1: { username: string, avatarUrl: string, score: number, symbol: string},
-        player2: { username: string, avatarUrl: string, score: number, symbol: string}
+    player: {
+        username: string;
+        avatarUrl: string;
+        score: number;
+        id: string;
+        symbol: string;
     };
 }
 
-const LayoutGame = ({ children, messages, onSendMessage, messageInput, setMessageInput, players }: LayoutProps) => {
-    console.log("player layout game", players)
+const LayoutGame = ({ children, messages, onSendMessage, messageInput, setMessageInput, player }: LayoutProps) => {
+    console.log("player layout game", player);
     return (
         <div className="min-h-screen flex">
             <main className="flex-grow flex">
                 <div className="flex flex-grow flex-col">
-                    <HeaderGame players={players} />
+                    <HeaderGame player={player} />
                     <div className="flex-grow flex justify-center items-center">
                         {children}
                     </div>
@@ -31,6 +34,6 @@ const LayoutGame = ({ children, messages, onSendMessage, messageInput, setMessag
             </main>
         </div>
     );
-}
+};
 
 export default LayoutGame;
