@@ -24,7 +24,7 @@ const footerData: { [key: string]: FooterColumn } = {
   games: {
     title: "Jeux",
     links: [
-      { to: "/morpion", label: "Morpion" },
+      { to: "/rooms/morpion", label: "Morpion" },
       { to: "#", label: "Uno", disabled: true },
       { to: "#", label: "Casse-briques", disabled: true },
       { to: "#", label: "Puissance 4", disabled: true },
@@ -91,7 +91,7 @@ const Footer = () => {
         ))}
       </div>
       <div className="mt-6 text-center">
-        <p>&copy; 2024 InstantPlayhub. All rights reserved.</p>
+        <p>&copy; 2024 InstantPlayhub. Tous droits réservés.</p>
       </div>
     </footer>
   );

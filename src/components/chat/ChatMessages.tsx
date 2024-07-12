@@ -61,25 +61,33 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
         }
     }, [selectedConversation, token]);
 
+    const scrollToBottom = () => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+    };
+
     useEffect(() => {
         const socket = io(import.meta.env.VITE_API_URL, {
             query: { token }  // Envoie le token JWT comme argument de requête
         });
         socketRef.current = socket;
-
+    
         socket.on('connect', () => {
             if (selectedConversation) {
                 socket.emit('join', { chat_id: selectedConversation.chat_id });
-                console.log("Connected to socket server");
             }
-        });
-
+        });    
         socket.on('message', (message: Message) => {
             console.log("Received message", message);
             setMessages((prevMessages) => [...prevMessages, message]);
             scrollToBottom();
         });
 
+        socket.on('disconnect', () => {
+            console.log("Socket disconnected");
+        });
+    
         return () => {
             if (selectedConversation) {
                 socket.emit('leave', { chat_id: selectedConversation.chat_id });
@@ -87,12 +95,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
             socket.disconnect();
         };
     }, [selectedConversation, token]);
-
-    const scrollToBottom = () => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-    };
 
     const handleSendMessage = async (message: string) => {
         if (message.trim() !== "" && selectedConversation) {
@@ -103,16 +105,16 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                 created_at: new Date().toISOString(),
                 token  // Ajout du token JWT dans le message
             };
-
+    
             if (socketRef.current) {
                 socketRef.current.emit('message', newMessage);
             }
-
+    
             setMessageInput("");
             scrollToBottom();
         }
     };
-
+    
     const handleEditMessage = async (messageId: string, newContent: string) => {
         try {
             await axios.put(`${import.meta.env.VITE_API_URL}/chat/edit_message`, {
@@ -156,7 +158,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                     <div className='p-4 border-b'>
                         <div className='flex items-center'>
                             <Avatar className="w-10 h-10 mr-4">
-                                <AvatarImage src={selectedConversation.other_user.profile_picture} alt={selectedConversation.other_user.username} />
+                                <AvatarImage className='object-cover' src={selectedConversation.other_user.profile_picture} alt={selectedConversation.other_user.username} />
                                 <AvatarFallback className="uppercase">{selectedConversation.other_user.username.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <p>{selectedConversation.other_user.username}</p>
@@ -176,10 +178,10 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                                         {messages.map((message) => (
                                             <div
                                                 key={message._id}
-                                                className={`flex items-start ${message.Sender === userInfo._id ? "flex-row-reverse" : "flex-row"} w-full`}
+                                                className={`flex items-start ${message.Sender === userInfo._id ? "flex-row-reverse" : "flex-row"}`}
                                             >
                                                 <Avatar className={`w-8 h-8 ${message.Sender === userInfo._id ? "ml-3" : "mr-3"}`}>
-                                                    <AvatarImage src={message.Sender === userInfo._id ? userInfo.profile_picture : selectedConversation.other_user.profile_picture} alt={message.Sender === userInfo._id ? "You" : selectedConversation.other_user.username} />
+                                                    <AvatarImage className='object-cover' src={message.Sender === userInfo._id ? userInfo.profile_picture : selectedConversation.other_user.profile_picture} alt={message.Sender === userInfo._id ? "You" : selectedConversation.other_user.username} />
                                                     <AvatarFallback>{message.Sender === userInfo._id ? userInfo.username.charAt(0) : selectedConversation.other_user.username.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 {message.Sender === userInfo._id && (
@@ -201,7 +203,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 )}
-                                                <div className={`flex flex-col max-w-[75%] md:max-w-[75%] ${message.Sender === userInfo._id ? "items-end" : "items-start"}`}>
+                                                <div className={`flex flex-col ${message.Sender === userInfo._id ? "items-end" : "items-start"}`}>
                                                     {editingMessageId === message._id ? (
                                                         <>
                                                             <Input
@@ -219,8 +221,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                                                             </div>
                                                         </>
                                                     ) : (
-                                                        <div className=''>
-                                                            <Card className={`p-2 mb-2 ${message.Sender === userInfo._id ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"} break-words`}>
+                                                        <>
+                                                            <Card className={`p-2 mb-2 ${message.Sender === userInfo._id ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
                                                                 {message.content}
                                                             </Card>
                                                             <div className="flex justify-between items-center">
@@ -228,7 +230,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ selectedConversation }) => 
                                                                     {new Date(message.created_at).toLocaleString()}
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </>
                                                     )}
                                                 </div>
                                             </div>

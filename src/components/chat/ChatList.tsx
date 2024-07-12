@@ -97,7 +97,7 @@ const ChatList: React.FC<ChatListProps> = ({ conversations, setConversations, se
                                 >
                                     <div className='flex items-center gap-4'>
                                         <Avatar className="w-10 h-10">
-                                            <AvatarImage src={conversation.other_user.profile_picture} alt={conversation.other_user.username} />
+                                            <AvatarImage className='object-cover' src={conversation.other_user.profile_picture} alt={conversation.other_user.username} />
                                             <AvatarFallback className='text-foreground uppercase'>{conversation.other_user.username.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <p>{conversation.other_user.username}</p>
