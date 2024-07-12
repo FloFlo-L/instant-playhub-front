@@ -7,7 +7,6 @@ import { ProtectedRoute } from "./protectedRoute";
 import LogoutPage from "@/pages/LogoutPage";
 import ContactUs from "@/pages/ContactUs";
 import OurTeam from "@/pages/OurTeam";
-import TicTacToe from "@/pages/games/TicTacToe";
 import TicTacToeRoom from "@/pages/games/TicTacToeRoom";
 import MyProfile from "@/pages/MyProfile";
 import Friends from "@/pages/Friends";
@@ -63,10 +62,6 @@ const routesAuthenticatedOnly = [
             {
                 path: "/chat/:id",
                 element: <Chat />,
-            },
-            {
-                path: "/morpion",
-                element: <TicTacToe />,
             },
             {
                 path: "/rooms/:gameType",
