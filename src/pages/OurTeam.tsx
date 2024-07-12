@@ -1,39 +1,39 @@
 import Layout from '@/components/layout/main/LayoutMain';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import TeamAvatar from "@/assets/team-avatar.jpg"; // Importing the image as a URL
+import TeamAvatar from "@/assets/team-avatar.jpg"; // Importation de l'image en tant qu'URL
 
-// Define the Team Member Interface
+// Définir l'interface des membres de l'équipe
 interface TeamMember {
     name: string;
     role: string;
     description: string;
-    avatarUrl?: string; // Optional field for the avatar URL
+    avatarUrl?: string; // Champ optionnel pour l'URL de l'avatar
 }
 
-// Create the Team Data
+// Créer les données de l'équipe
 const teamMembers: TeamMember[] = [
     {
         name: "Steven",
-        role: "Project Manager, Back End Developer",
-        description: "Steven is the project manager and a backend developer.",
+        role: "Développeur Back End",
+        description: "Steven est le chef de projet et un développeur back-end.",
         avatarUrl: TeamAvatar,
     },
     {
         name: "Nicolas",
-        role: "Back End Developer",
-        description: "Nicolas is a backend developer specializing in database management and server-side logic.",
+        role: "Développeur Back End",
+        description: "Nicolas est un développeur back-end spécialisé dans la gestion des bases de données et la logique côté serveur.",
         avatarUrl: TeamAvatar,
     },
     {
         name: "Lisa",
-        role: "Front End Developer",
-        description: "Lisa is a front-end developer with a keen eye for design and user experience.",
+        role: "Développeuse Front End",
+        description: "Lisa est une développeuse front-end avec un sens aigu du design et de l'expérience utilisateur.",
         avatarUrl: TeamAvatar,
     },
     {
         name: "Florian",
-        role: "Front End Developer",
-        description: "Florian is a front-end developer who loves working with the latest web technologies.",
+        role: "Développeur Front End",
+        description: "Florian est un développeur front-end qui aime travailler avec les dernières technologies web.",
         avatarUrl: TeamAvatar,
     },
 ];
@@ -42,9 +42,9 @@ const OurTeam = () => {
     return (
         <Layout>
             <div className="container mx-auto py-12">
-                <h1 className="text-4xl font-bold text-center mb-8">Our Team</h1>
+                <h1 className="text-4xl font-bold text-center mb-8">Notre Équipe</h1>
                 <p className="text-center mb-12">
-                    Our team is composed of four dedicated individuals who strive to provide you with the best gaming experience on our site. We put everything in place to ensure you enjoy your time here.
+                    Notre équipe est composée de quatre personnes dévouées qui s'efforcent de vous offrir la meilleure expérience de jeu sur notre site. Nous mettons tout en œuvre pour que vous passiez un bon moment ici.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 xxl:grid-cols-4 gap-8">
                     {teamMembers.map((member, index) => (
