@@ -13,6 +13,7 @@ import Friends from "@/pages/Friends";
 import Chat from "@/pages/Chat";
 import TermsAndConditions from "@/pages/TermsAndConditions";
 import Room from "@/pages/Room";
+import ConnectFour from "@/pages/games/ConnectFour.tsx";
 
 
 const routesPublic = [
@@ -74,6 +75,10 @@ const routesAuthenticatedOnly = [
             {
                 path: "/logout",
                 element: <LogoutPage />,
+            },
+            {
+                path: "/rooms/puissance-quatre/:roomName/:roomId",
+                element: <ConnectFour />
             },
         ],
     },
