@@ -20,12 +20,12 @@ import { Textarea } from "@/components/ui/textarea"
 
 // Schéma de validation
 const formSchema = z.object({
-    name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-    email: z.string().email({ message: "Invalid email address." }),
-    phone: z.string().min(10, { message: "Phone number must be at least 10 digits." }),
-    message: z.string().min(5, { message: "Message must be at least 5 characters." }),
+    name: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères." }),
+    email: z.string().email({ message: "Adresse e-mail invalide." }),
+    phone: z.string().min(10, { message: "Le numéro de téléphone doit contenir au moins 10 chiffres." }),
+    message: z.string().min(5, { message: "Le message doit contenir au moins 5 caractères." }),
     agreement: z.literal(true, {
-        errorMap: () => ({ message: "You must accept the terms and conditions." }),
+        errorMap: () => ({ message: "Vous devez accepter les termes et conditions." }),
     }),
 })
 
@@ -45,8 +45,8 @@ const ContactUs = () => {
     const onSubmit = () => {
         form.reset();
         toast({
-            title: "Success",
-            description: "Your message has been sent.",
+            title: "Succès",
+            description: "Votre message a été envoyé.",
         })
     }
 
@@ -57,9 +57,9 @@ const ContactUs = () => {
                     <div className="mx-auto grid w-[700px] gap-6">
                         <div className="">
                             <div className="space-y-2">
-                                <h2 className="text-3xl font-bold">Contact Us</h2>
+                                <h2 className="text-3xl font-bold">Contactez-nous</h2>
                                 <p className="text-muted-foreground">
-                                    Please fill the below form and we will get back to you as soon as possible.
+                                    Veuillez remplir le formulaire ci-dessous et nous vous répondrons dès que possible.
                                 </p>
                             </div>
                             <Form {...form}>
@@ -69,7 +69,7 @@ const ContactUs = () => {
                                         name="name"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Name</FormLabel>
+                                                <FormLabel>Nom</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="John Doe" {...field} />
                                                 </FormControl>
@@ -84,7 +84,7 @@ const ContactUs = () => {
                                             <FormItem>
                                                 <FormLabel>Email</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="myemail@example.com" {...field} />
+                                                    <Input placeholder="monemail@example.com" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -95,7 +95,7 @@ const ContactUs = () => {
                                         name="phone"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Phone Number</FormLabel>
+                                                <FormLabel>Numéro de téléphone</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="0606060606" {...field} />
                                                 </FormControl>
@@ -110,7 +110,7 @@ const ContactUs = () => {
                                             <FormItem>
                                                 <FormLabel>Message</FormLabel>
                                                 <FormControl>
-                                                    <Textarea placeholder="Type your message here." {...field}/>
+                                                    <Textarea placeholder="Tapez votre message ici." {...field}/>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -129,9 +129,9 @@ const ContactUs = () => {
                                                             onCheckedChange={field.onChange}
                                                         />
                                                         <Label htmlFor="agreement" className="text-sm font-normal">
-                                                            I agree to the{" "}
+                                                            J'accepte les{" "}
                                                             <Link to="/" className="underline underline-offset-2">
-                                                                Terms &amp; Conditions
+                                                                termes et conditions
                                                             </Link>
                                                         </Label>
                                                     </div>
@@ -141,7 +141,7 @@ const ContactUs = () => {
                                         )}
                                     />
                                     <Button type="submit" className="w-full">
-                                        Submit
+                                        Soumettre
                                     </Button>
                                 </form>
                             </Form>

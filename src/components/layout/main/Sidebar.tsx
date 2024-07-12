@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sheet"
 import { SwitchTheme } from "@/components/switch-theme";
 import { cn } from "@/lib/utils";
+import Logo from "../../../../public/vite.svg";
 
 const Sidebar = () => {
     const { token } = useAuth(); // Use the useAuth hook to get the token
@@ -44,22 +45,22 @@ const Sidebar = () => {
                 items: [
                     {
                         title: "Morpion",
-                        path: "/tic-tac-toe",
+                        path: "/rooms/morpion",
                         icon: <FaHashtag size={20} />
                     },
                     {
                         title: "Uno",
-                        path: "/uno",
+                        path: "/rooms/uno",
                         icon: <FaHashtag size={20} />
                     },
                     {
                         title: "Puissance 4",
-                        path: "/connect-four",
+                        path: "/rooms/puissance-quatre",
                         icon: <FaHashtag size={20} />
                     },
                     {
                         title: "Casse-briques",
-                        path: "/breakout",
+                        path: "/rooms/breakout",
                         icon: <FaHashtag size={20} />
                     },
                 ],
@@ -133,13 +134,17 @@ const Sidebar = () => {
                     <SheetContent side="left" className="sm:max-w-xs">
                         <nav className="flex flex-col justify-between h-full text-lg font-medium">
                             <div>
+                                <div className="flex gap-2 items-center mb-4">
+                                    <img src={Logo} alt="Logo" className="w-12 pl-2.5" />
+                                    <p>PlayHub</p>
+                                </div>
                                 {menuItems.map((category, index) => (
                                     <div key={index}>
                                         {category.items.map((item, index) => (
                                             <Link
                                                 key={index}
                                                 to={item.path}
-                                                className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground ${location.pathname === item.path ? 'text-accent-foreground' : ''}`}
+                                                className={`flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground ${location.pathname === item.path ? 'text-primary' : ''}`}
 
                                             >
                                                 {item.icon}

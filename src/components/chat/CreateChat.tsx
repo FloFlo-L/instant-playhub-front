@@ -21,7 +21,7 @@ import {
     CommandList,
 } from "@/components/ui/command";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface User {
     _id: string;
@@ -116,7 +116,7 @@ const CreateChat: React.FC<CreateChatProps> = ({ onChatCreated }) => {
             // Appeler la fonction de rappel pour mettre à jour l'état des conversations
             onChatCreated({ chat_id: chatId, other_user: selectedFriend, created_at: new Date().toISOString() });
             navigate(`/chat/${chatId}`);
-        } catch (error) {
+        } catch (error : any) {
             toast({
                 variant: "destructive",
                 title: "Erreur",
@@ -156,7 +156,7 @@ const CreateChat: React.FC<CreateChatProps> = ({ onChatCreated }) => {
                                         {searchResults.map((result) => (
                                             <CommandItem className='hover:cursor-pointer' key={result._id} onSelect={() => handleSelectFriend(result.username)}>
                                                 <Avatar className="w-6 h-6 mr-2">
-                                                    <AvatarImage src={result.profile_picture} alt={result.username} />
+                                                    <AvatarImage className='object-cover' src={result.profile_picture} alt={result.username} />
                                                     <AvatarFallback className="uppercase">{result.username.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 <span>{result.username}</span>

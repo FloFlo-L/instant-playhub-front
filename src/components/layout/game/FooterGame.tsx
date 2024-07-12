@@ -6,7 +6,7 @@ const FooterGame = () => {
     return (
         <footer className="flex gap-4 justify-center p-4 bg-muted text-secondary-foreground border-t">
             <Button asChild>
-                <Link to="/tic-tac-toe">Exit Game</Link>
+                <Link to="/">Exit Game</Link>
             </Button>
             <SwitchTheme />
         </footer>

@@ -7,12 +7,14 @@ import { ProtectedRoute } from "./protectedRoute";
 import LogoutPage from "@/pages/LogoutPage";
 import ContactUs from "@/pages/ContactUs";
 import OurTeam from "@/pages/OurTeam";
-import TicTacToe from "@/pages/games/TicTacToe";
 import TicTacToeRoom from "@/pages/games/TicTacToeRoom";
 import MyProfile from "@/pages/MyProfile";
 import Friends from "@/pages/Friends";
 import Chat from "@/pages/Chat";
 import TermsAndConditions from "@/pages/TermsAndConditions";
+import Room from "@/pages/Room";
+import Score from "@/pages/Score";
+import ConnectFour from "@/pages/games/ConnectFour.tsx";
 
 
 const routesPublic = [
@@ -64,16 +66,24 @@ const routesAuthenticatedOnly = [
                 element: <Chat />,
             },
             {
-                path: "/tic-tac-toe",
-                element: <TicTacToe />,
+                path: "/rooms/:gameType",
+                element: <Room />,
             },
             {
-                path: "/tic-tac-toe/:roomId",
+                path: "/rooms/morpion/:roomName/:roomId",
                 element: <TicTacToeRoom />,
             },
             {
                 path: "/logout",
                 element: <LogoutPage />,
+            },
+            {
+                path: "/scores",
+                element: <Score />
+            },
+            {
+                path: "/rooms/puissance-quatre/:roomName/:roomId",
+                element: <ConnectFour />
             },
         ],
     },
