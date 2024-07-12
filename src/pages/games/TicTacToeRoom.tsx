@@ -16,9 +16,6 @@ const TicTacToeRoom = () => {
     const [messages, setMessages] = useState<{ text: string, isOwnMessage: boolean }[]>([]);
     const [messageInput, setMessageInput] = useState("");
     const [gameOverMessage, setGameOverMessage] = useState<string | null>(null);
-    const [waitingForOpponent, setWaitingForOpponent] = useState(true); // Initially true to show the dialog
-    const [numberOfPlayers, setNumberOfPlayers] = useState(0); // State for number of players in the room
-    const [copySuccess, setCopySuccess] = useState<string | null>(null); // State for copy success message
     const { userInfo } = useAuth();
     const [player, setPlayer] = useState<{ username: string, avatarUrl: string, score: number, id: string, symbol: string }>({
         username: "",
@@ -39,7 +36,9 @@ const TicTacToeRoom = () => {
 
     const handlePlayAgain = () => {
         socket.emit("play_again_morpion", { room: roomId, user_id: userInfo._id });
-        setWaitingForOpponent(true);
+        setBoard(Array(9).fill(null));
+        setCurrentPlayer('X');
+        setGameOverMessage(null);
     };
 
     const handleQuit = () => {
@@ -75,7 +74,6 @@ const TicTacToeRoom = () => {
             setBoard(Array(9).fill(null));
             setCurrentPlayer('X');
             setGameOverMessage(null);
-            setWaitingForOpponent(false);
             toast({
                 title: "La partie commence !",
             });
@@ -89,13 +87,9 @@ const TicTacToeRoom = () => {
         socket.on("room_joined_morpion", (data) => {
             const { player } = data;
             setPlayer(player);
-            setNumberOfPlayers((prev) => prev + 1); // Increment the number of players
             toast({
                 title: `Vous jouez en tant que ${player.symbol}`,
             });
-            if (numberOfPlayers + 1 >= 2) {
-                setWaitingForOpponent(false);  // Close dialog if opponent joins
-            }
         });
 
         socket.on("new_message_morpion", (message) => {
@@ -109,18 +103,6 @@ const TicTacToeRoom = () => {
 
         socket.on("game_over_morpion", (data) => {
             setGameOverMessage(data.message);
-        });
-
-        socket.on("waiting_for_opponent", () => {
-            setWaitingForOpponent(true);
-        });
-
-        socket.on("opponent_left", (data) => {
-            toast({
-                title: data.message,
-            });
-            setGameOverMessage(null);  // Close dialog if opponent leaves
-            navigate('/');
         });
 
         socket.on("error_morpion", (error) => {
@@ -139,11 +121,9 @@ const TicTacToeRoom = () => {
             socket.off("new_message_morpion");
             socket.off("chat_history_morpion");
             socket.off("game_over_morpion");
-            socket.off("waiting_for_opponent");
-            socket.off("opponent_left");
             socket.off("error_morpion");
         };
-    }, [roomName, toast, userInfo, numberOfPlayers]);
+    }, [roomName, toast, userInfo]);
 
     const handleCardClick = (index: number) => {
         if (board[index] === "" && currentPlayer === player.symbol) {
@@ -200,26 +180,14 @@ const TicTacToeRoom = () => {
                             <DialogDescription>{gameOverMessage}</DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
-                            <Button variant="outline" onClick={handlePlayAgain} disabled={waitingForOpponent}>
-                                {waitingForOpponent ? "En attente de l'adversaire..." : "Rejouer"}
+                            <Button variant="outline" onClick={handlePlayAgain}>
+                                Rejouer
                             </Button>
                             <Button variant="destructive" onClick={handleQuit}>Quitter</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
             )}
-            <Dialog open={waitingForOpponent}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>En attente d'un adversaire</DialogTitle>
-                        <DialogDescription>
-                            Veuillez patienter jusqu'à ce qu'un deuxième joueur rejoigne la room.
-                            <Button onClick={handleCopyLink} className="mt-4">Copier le lien de la room</Button>
-                            {copySuccess && <p className="mt-2">{copySuccess}</p>}
-                        </DialogDescription>
-                    </DialogHeader>
-                </DialogContent>
-            </Dialog>
         </>
     );
 };
