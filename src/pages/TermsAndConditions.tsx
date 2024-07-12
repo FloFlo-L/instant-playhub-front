@@ -69,7 +69,7 @@ const TermsAndConditions = () => {
                     </div>
                     <div>
                         <h2 className="text-2xl font-bold mb-2">10. Contact</h2>
-                        <p>Si vous avez des questions ou des préoccupations concernant ces termes et conditions, veuillez nous contacter à [adresse email ou formulaire de contact].</p>
+                        <p>Si vous avez des questions ou des préoccupations concernant ces termes et conditions, veuillez nous contacter à contact@instant-playbug.com.</p>
                     </div>
                     <div>
                         <h2 className="text-2xl font-bold mb-2">11. Loi Applicable</h2>
