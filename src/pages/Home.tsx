@@ -1,4 +1,3 @@
-import React from 'react';
 import Layout from '@/components/layout/main/LayoutMain';
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
