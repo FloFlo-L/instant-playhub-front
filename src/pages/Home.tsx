@@ -22,13 +22,13 @@ const games = [
     { 
         title: 'Casse-briques',  
         path: '/rooms/breakout',
-        enabled: true, 
+        enabled: false,
         image: 'https://www.coolmathgames.com/sites/default/files/styles/mobile_game_image/public/Breakout_OG-logo.jpg?itok=5U0h7bVj' 
     },
     { 
         title: 'Puissance 4', 
         path: '/rooms/puissance-quatre', 
-        enabled: false, 
+        enabled: false,
         image: 'https://store-images.s-microsoft.com/image/apps.41929.13910108538401625.dfad4587-dfb3-4aa4-8bed-b5d2dd8fc79f.54781100-f7e4-4c22-89bf-257118f9ac23?mode=scale&q=90&h=1080&w=1920' 
     },
 ];
