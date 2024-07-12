@@ -99,11 +99,12 @@ const TicTacToeRoom = () => {
         });
 
         socket.on("new_message_morpion", (message) => {
-            setMessages((prevMessages) => [...prevMessages, { text: message, isOwnMessage: false }]);
+            setMessages((prevMessages) => [...prevMessages, { text: `${message.user}: ${message.message}`, isOwnMessage: message.user === userInfo.username }]);
         });
 
         socket.on("chat_history_morpion", (history) => {
-            setMessages(history);
+            const formattedHistory = history.map((msg: any) => ({ text: `${msg.user}: ${msg.message}`, isOwnMessage: msg.user === userInfo.username }));
+            setMessages(formattedHistory);
         });
 
         socket.on("game_over_morpion", (data) => {
@@ -155,7 +156,6 @@ const TicTacToeRoom = () => {
     const handleSendMessage = (message: string) => {
         if (message.trim() !== "") {
             socket.emit("send_message_morpion", { room: roomId, message });
-            setMessages((prevMessages) => [...prevMessages, { text: message, isOwnMessage: true }]);
             setMessageInput("");
         }
     };
